@@ -1,17 +1,27 @@
 {
   "name": "raffle_back",
   "version": "1.0.50",
+  "type": "module",
   "scripts": {
     "test": "bun test",
     "dev": "bun run --watch src/index.ts",
+    "lint": "eslint --ignore-pattern .gitignore .",
+    "lint:fix": "bun run lint -- --fix",
     "prepare": "husky"
   },
   "dependencies": {
     "elysia": "latest",
-    "husky": "^9.1.6"
+    "husky": "^9.1.6",
+    "pino": "^9.5.0",
+    "pino-pretty": "^13.0.0"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "eslint-config-codely": "^4.2.0",
+    "lint-staged": "^15.2.10"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "lint-staged": {
+    "*.(js|ts)": "npm run lint:fix"
+  }
 }
