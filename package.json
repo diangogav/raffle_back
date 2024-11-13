@@ -3,7 +3,7 @@
   "version": "1.0.50",
   "type": "module",
   "scripts": {
-    "test": "bun test",
+    "test": "npx bun test",
     "test:coverage": "bun test --coverage",
     "dev": "bun run --watch src/index.ts",
     "lint": "eslint --ignore-pattern .gitignore .",
