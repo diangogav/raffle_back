@@ -17,8 +17,6 @@ describe("Raffle", () => {
 		expect(raffle.description).toBe(params.description);
 		expect(raffle.ticketPrice).toBe(params.ticketPrice);
 		expect(raffle.endDate).toBe(params.endDate);
-		expect(raffle.createdAt).toBe(params.createdAt);
-		expect(raffle.updatedAt).toBe(params.updatedAt);
 		expect(raffle.totalTickets).toBe(params.totalTickets);
 		expect(raffle.userId).toBe(params.userId);
 	});

@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 
-import { RaffleAttributes } from "../../../../src/modules/raffle/domain/Raffle";
+import { RaffleCreatorRequestDto } from "../../../../src/modules/raffle/application/dtos/RaffleCreatorRequestDto";
 
-export class RaffleAttributesMother {
-	static create(params?: Partial<RaffleAttributes>): RaffleAttributes {
+export class RaffleCreatorRequestDtoMother {
+	static create(params?: Partial<RaffleCreatorRequestDto>): RaffleCreatorRequestDto {
 		return {
 			id: faker.string.uuid(),
 			title: faker.lorem.words(),

@@ -7,10 +7,13 @@ export type RaffleAttributes = {
 	description: string;
 	ticketPrice: number;
 	endDate: Date;
-	createdAt: Date;
-	updatedAt: Date;
 	totalTickets: number;
 	userId: string;
+};
+
+export type RaffleDateAttributes = {
+	createdAt: Date;
+	updatedAt: Date;
 };
 
 export class Raffle {
@@ -24,7 +27,7 @@ export class Raffle {
 	public readonly totalTickets: number;
 	public readonly userId: string;
 
-	private constructor(data: RaffleAttributes) {
+	private constructor(data: RaffleAttributes & RaffleDateAttributes) {
 		this.id = data.id;
 		this.title = data.title;
 		this.description = data.description;
@@ -37,6 +40,9 @@ export class Raffle {
 	}
 
 	static create(data: RaffleAttributes): Raffle {
-		return new Raffle(data);
+		const createdAt = new Date();
+		const updatedAt = new Date();
+
+		return new Raffle({ ...data, createdAt, updatedAt });
 	}
 }
