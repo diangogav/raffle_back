@@ -6,4 +6,5 @@ export type RaffleCreatorRequestDto = {
 	endDate: Date;
 	totalTickets: number;
 	userId: string;
+	cover: string;
 };

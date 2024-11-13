@@ -12,6 +12,7 @@ export class RaffleAttributesMother {
 			endDate: faker.date.future(),
 			totalTickets: faker.number.int({ min: 1 }),
 			userId: faker.string.uuid(),
+			cover: faker.image.url(),
 			...params,
 		};
 	}

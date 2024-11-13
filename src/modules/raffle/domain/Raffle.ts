@@ -9,6 +9,7 @@ export type RaffleAttributes = {
 	endDate: Date;
 	totalTickets: number;
 	userId: string;
+	cover: string;
 };
 
 export type RaffleDateAttributes = {
@@ -26,6 +27,7 @@ export class Raffle {
 	public readonly updatedAt: Date;
 	public readonly totalTickets: number;
 	public readonly userId: string;
+	public readonly cover: string;
 
 	private constructor(data: RaffleAttributes & RaffleDateAttributes) {
 		this.id = data.id;
@@ -37,6 +39,7 @@ export class Raffle {
 		this.updatedAt = data.updatedAt;
 		this.totalTickets = new TotalTickets(data.totalTickets).value;
 		this.userId = data.userId;
+		this.cover = data.cover;
 	}
 
 	static create(data: RaffleAttributes): Raffle {
