@@ -1,6 +1,6 @@
 {
   "name": "raffle_back",
-  "version": "1.0.50",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "test": "npx bun test",
