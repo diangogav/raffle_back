@@ -2,8 +2,8 @@ import { DataSource, DataSourceOptions } from "typeorm";
 
 import { config } from "../../../../config";
 
-import { UserEntity } from "./entities/UserEntity";
 import { RaffleEntity } from "./entities/RaffleEntity";
+import { UserEntity } from "./entities/UserEntity";
 
 const options: DataSourceOptions = {
 	type: "postgres",

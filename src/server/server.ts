@@ -1,8 +1,9 @@
+import cors from "@elysiajs/cors";
+import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
 import { Logger } from "../shared/logger/domain/Logger";
-import cors from "@elysiajs/cors";
-import swagger from "@elysiajs/swagger";
+
 import { raffleRoutes } from "./routes/raffle-routes";
 
 export class Server {
