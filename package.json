@@ -9,7 +9,11 @@
     "lint": "eslint --ignore-pattern .gitignore .",
     "lint:fix": "bun run lint -- --fix",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
-    "build": "tsc"
+    "build": "tsc",
+    "typeorm": "tsx -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/shared/database/infrastructure/postgres/data-source.ts",
+    "migration:generate": "bun typeorm migration:generate src/shared/database/infrastructure/postgres/migrations/$npm_config_name",
+    "migration:run": "bun typeorm migration:run",
+    "migration:revert": "bun typeorm migration:revert"
   },
   "dependencies": {
     "@elysiajs/bearer": "^1.1.2",
@@ -25,6 +29,7 @@
     "pg": "^8.13.1",
     "pino": "^9.5.0",
     "pino-pretty": "^11.3.0",
+    "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.20"
   },
   "devDependencies": {
@@ -37,7 +42,8 @@
     "eslint-plugin-import": "^2.31.0",
     "husky": "^9.1.6",
     "install": "^0.13.0",
-    "lint-staged": "^15.2.10"
+    "lint-staged": "^15.2.10",
+    "tsx": "^4.19.2"
   },
   "module": "src/index.js",
   "lint-staged": {
