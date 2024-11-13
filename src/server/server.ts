@@ -1,13 +1,20 @@
 import { Elysia } from "elysia";
 
 import { Logger } from "../shared/logger/domain/Logger";
+import cors from "@elysiajs/cors";
+import swagger from "@elysiajs/swagger";
+import { raffleRoutes } from "./routes/raffle-routes";
 
 export class Server {
 	private readonly app: Elysia;
 	private readonly logger: Logger;
 
 	constructor(logger: Logger) {
-		this.app = new Elysia();
+		this.app = new Elysia().use(cors()).use(swagger());
+		// @ts-expect-error linter not config correctly
+		this.app.group("/api/v1", (app: Elysia) => {
+			return app.use(raffleRoutes);
+		});
 		this.logger = logger;
 	}
 

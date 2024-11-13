@@ -48,4 +48,8 @@ export class Raffle {
 
 		return new Raffle({ ...data, createdAt, updatedAt });
 	}
+
+	static from(data: RaffleAttributes & RaffleDateAttributes): Raffle {
+		return new Raffle(data);
+	}
 }

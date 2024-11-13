@@ -14,13 +14,13 @@ export class RaffleEntity {
 	description: string;
 
 	@Column({ type: "numeric", name: "ticket_price" })
-	ticketPrice: string;
+	ticketPrice: number;
 
 	@Column({ type: "timestamp", name: "end_date" })
 	endDate: Date;
 
 	@Column({ type: "numeric", name: "total_tickets" })
-	totalTickets: string;
+	totalTickets: number;
 
 	@Column({ type: "uuid", name: "user_id" })
 	userId: string;
