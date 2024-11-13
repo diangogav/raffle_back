@@ -2,6 +2,8 @@ import { DataSource, DataSourceOptions } from "typeorm";
 
 import { config } from "../../../../config";
 
+import { UserEntity } from "./entities/UserEntity";
+
 const options: DataSourceOptions = {
 	type: "postgres",
 	host: config.postgres.host,
@@ -11,8 +13,8 @@ const options: DataSourceOptions = {
 	database: config.postgres.database,
 	synchronize: false,
 	logging: true,
-	entities: [],
+	entities: [UserEntity],
 	subscribers: [],
-	migrations: [],
+	migrations: ["src/shared/database/infrastructure/postgres/migrations/*.ts"],
 };
 export const dataSource = new DataSource(options);
