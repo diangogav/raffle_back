@@ -4,6 +4,7 @@ import { Elysia } from "elysia";
 
 import { Logger } from "../shared/logger/domain/Logger";
 
+import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
 
 export class Server {
@@ -14,7 +15,7 @@ export class Server {
 		this.app = new Elysia().use(cors()).use(swagger());
 		// @ts-expect-error linter not config correctly
 		this.app.group("/api/v1", (app: Elysia) => {
-			return app.use(raffleRoutes);
+			return app.use(healthCheckRoutes).use(raffleRoutes);
 		});
 		this.logger = logger;
 	}

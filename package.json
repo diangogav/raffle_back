@@ -10,7 +10,7 @@
     "lint": "eslint --ignore-pattern .gitignore .",
     "lint:fix": "bun run lint -- --fix",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "typeorm": "tsx -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/shared/database/infrastructure/postgres/data-source.ts",
     "migration:generate": "bun typeorm migration:generate src/shared/database/infrastructure/postgres/migrations/$npm_config_name",
     "migration:run": "bun typeorm migration:run",
@@ -44,6 +44,7 @@
     "husky": "^9.1.6",
     "install": "^0.13.0",
     "lint-staged": "^15.2.10",
+    "rimraf": "^6.0.1",
     "tsx": "^4.19.2"
   },
   "module": "src/index.js",
