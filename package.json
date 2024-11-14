@@ -6,7 +6,7 @@
     "test": "npx bun test",
     "test:coverage": "bun test --coverage",
     "dev": "bun run --watch src/index.ts",
-    "start": "node /src/index.js",
+    "start": "node src/index.ts",
     "lint": "eslint --ignore-pattern .gitignore .",
     "lint:fix": "bun run lint -- --fix",
     "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install; fi",
