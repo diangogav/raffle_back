@@ -12,10 +12,10 @@ export class Server {
 	private readonly logger: Logger;
 
 	constructor(logger: Logger) {
-		this.app = new Elysia().use(cors()).use(swagger());
+		this.app = new Elysia().use(cors()).use(swagger()).use(healthCheckRoutes);
 		// @ts-expect-error linter not config correctly
 		this.app.group("/api/v1", (app: Elysia) => {
-			return app.use(healthCheckRoutes).use(raffleRoutes);
+			return app.use(raffleRoutes);
 		});
 		this.logger = logger;
 	}
