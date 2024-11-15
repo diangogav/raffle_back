@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 import { RaffleAttributes } from "../../../../src/modules/raffle/domain/Raffle";
+import { RaffleStatus } from "../../../../src/modules/raffle/domain/RaffleStatus.enum";
 
 export class RaffleAttributesMother {
 	static create(params?: Partial<RaffleAttributes>): RaffleAttributes {
@@ -13,6 +14,7 @@ export class RaffleAttributesMother {
 			totalTickets: faker.number.int({ min: 1 }),
 			userId: faker.string.uuid(),
 			cover: faker.image.url(),
+			status: faker.helpers.enumValue(RaffleStatus),
 			...params,
 		};
 	}

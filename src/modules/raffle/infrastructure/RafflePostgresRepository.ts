@@ -2,6 +2,7 @@ import { dataSource } from "../../../shared/database/infrastructure/postgres/dat
 import { RaffleEntity } from "../../../shared/database/infrastructure/postgres/entities/RaffleEntity";
 import { Raffle } from "../domain/Raffle";
 import { RaffleRepository } from "../domain/RaffleRepository";
+import { RaffleStatus } from "../domain/RaffleStatus.enum";
 
 export class RafflePostgresRepository implements RaffleRepository {
 	async save(raffle: Raffle): Promise<void> {
@@ -19,7 +20,7 @@ export class RafflePostgresRepository implements RaffleRepository {
 		await repository.save(raffleEntity);
 	}
 
-	async getSortedBy({
+	async getOngoingRafflesSortedBy({
 		field,
 		direction,
 		limit,
@@ -33,6 +34,9 @@ export class RafflePostgresRepository implements RaffleRepository {
 		const repository = dataSource.getRepository(RaffleEntity);
 
 		const raffles = await repository.find({
+			where: {
+				status: RaffleStatus.ONGOING,
+			},
 			order: {
 				[field]: direction,
 			},
@@ -52,6 +56,7 @@ export class RafflePostgresRepository implements RaffleRepository {
 				cover: raffleEntity.cover,
 				createdAt: raffleEntity.createdAt,
 				updatedAt: raffleEntity.updatedAt,
+				status: raffleEntity.status,
 			});
 		});
 	}

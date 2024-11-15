@@ -1,5 +1,7 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
+import { RaffleStatus } from "./../../../../../modules/raffle/domain/RaffleStatus.enum";
+
 @Entity({
 	name: "raffles",
 })
@@ -27,6 +29,13 @@ export class RaffleEntity {
 
 	@Column({ type: "varchar", nullable: true })
 	cover: string;
+
+	@Column({
+		type: "enum",
+		enum: RaffleStatus,
+		default: RaffleStatus.PENDING,
+	})
+	status: RaffleStatus;
 
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;

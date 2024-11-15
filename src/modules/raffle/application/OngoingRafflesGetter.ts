@@ -1,7 +1,7 @@
 import { Raffle } from "../domain/Raffle";
 import { RaffleRepository } from "../domain/RaffleRepository";
 
-export class MostRecentRaffleGetter {
+export class OngoingRafflesGetter {
 	constructor(private readonly repository: RaffleRepository) {}
 
 	async get({
@@ -15,7 +15,7 @@ export class MostRecentRaffleGetter {
 		field: string;
 		direction: "ASC" | "DESC";
 	}): Promise<Raffle[]> {
-		return await this.repository.getSortedBy({
+		return await this.repository.getOngoingRafflesSortedBy({
 			field,
 			direction,
 			limit,

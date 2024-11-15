@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
 
-import { MostRecentRaffleGetter } from "../../modules/raffle/application/MostRecentRaffleGetter";
+import { OngoingRafflesGetter } from "../../modules/raffle/application/OngoingRafflesGetter";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
 
 const repository = new RafflePostgresRepository();
@@ -14,7 +14,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 			const field = "createdAt";
 			const direction = "DESC";
 
-			return new MostRecentRaffleGetter(repository).get({ limit, page, field, direction });
+			return new OngoingRafflesGetter(repository).get({ limit, page, field, direction });
 		},
 		{
 			query: t.Object({
@@ -31,7 +31,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 			const field = "ticketPrice";
 			const direction = "ASC";
 
-			return new MostRecentRaffleGetter(repository).get({ limit, page, field, direction });
+			return new OngoingRafflesGetter(repository).get({ limit, page, field, direction });
 		},
 		{
 			query: t.Object({

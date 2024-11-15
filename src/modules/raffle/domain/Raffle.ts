@@ -1,3 +1,4 @@
+import { RaffleStatus } from "./RaffleStatus.enum";
 import { TicketPrice } from "./TicketPrice";
 import { TotalTickets } from "./TotalTickets";
 
@@ -10,6 +11,7 @@ export type RaffleAttributes = {
 	totalTickets: number;
 	userId: string;
 	cover: string;
+	status: RaffleStatus;
 };
 
 export type RaffleDateAttributes = {
@@ -28,6 +30,7 @@ export class Raffle {
 	public readonly totalTickets: number;
 	public readonly userId: string;
 	public readonly cover: string;
+	public readonly status: RaffleStatus;
 
 	private constructor(data: RaffleAttributes & RaffleDateAttributes) {
 		this.id = data.id;
@@ -40,13 +43,14 @@ export class Raffle {
 		this.totalTickets = new TotalTickets(data.totalTickets).value;
 		this.userId = data.userId;
 		this.cover = data.cover;
+		this.status = data.status;
 	}
 
-	static create(data: RaffleAttributes): Raffle {
+	static create(data: Omit<RaffleAttributes, "status">): Raffle {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 
-		return new Raffle({ ...data, createdAt, updatedAt });
+		return new Raffle({ ...data, status: RaffleStatus.PENDING, createdAt, updatedAt });
 	}
 
 	static from(data: RaffleAttributes & RaffleDateAttributes): Raffle {
