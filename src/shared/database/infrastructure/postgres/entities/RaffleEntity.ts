@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
 
-import { RaffleStatus } from "./../../../../../modules/raffle/domain/RaffleStatus.enum";
+import { RaffleStatus } from "../../../../../modules/raffle/domain/RaffleStatus.enum";
 
 @Entity({
 	name: "raffles",
