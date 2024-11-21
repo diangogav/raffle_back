@@ -4,6 +4,7 @@ import { config } from "../../../../config";
 
 import { RaffleEntity } from "./entities/RaffleEntity";
 import { UserEntity } from "./entities/UserEntity";
+import { TicketEntity } from "./entities/TicketEntity";
 
 const options: DataSourceOptions = {
 	type: "postgres",
@@ -17,7 +18,7 @@ const options: DataSourceOptions = {
 	ssl: {
 		rejectUnauthorized: false,
 	},
-	entities: [UserEntity, RaffleEntity],
+	entities: [UserEntity, RaffleEntity, TicketEntity],
 	subscribers: [],
 	migrations: ["src/shared/database/infrastructure/postgres/migrations/*.ts"],
 };
