@@ -10,7 +10,7 @@ export class UserEntity {
 	@Column({ type: "varchar" })
 	name: string;
 
-	@Column({ type: "varchar" })
+	@Column({ type: "varchar", name: "last_name" })
 	lastName: string;
 
 	@Column({ type: "varchar" })
