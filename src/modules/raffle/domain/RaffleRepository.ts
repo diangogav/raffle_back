@@ -1,3 +1,5 @@
+import { Ticket } from "../tickets/domain/Ticket";
+
 import { Raffle } from "./Raffle";
 
 export interface RaffleRepository {
@@ -13,4 +15,6 @@ export interface RaffleRepository {
 		limit: number;
 		page: number;
 	}): Promise<Raffle[]>;
+	getTickets(raffleId: string): Promise<Ticket[]>;
+	findById(raffleId: string): Promise<Raffle | null>;
 }

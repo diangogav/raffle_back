@@ -1,12 +1,10 @@
 import { Elysia, t } from "elysia";
 
 import { OngoingRafflesGetter } from "../../modules/raffle/application/OngoingRafflesGetter";
+import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetailFinder";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
-import { RaffleTicketsGetter } from "../../modules/raffle/tickets/application/RaffleTicketsGetter";
-import { TicketPostgresRepository } from "../../modules/raffle/tickets/infrastructure/TicketPostgresRepository";
 
 const repository = new RafflePostgresRepository();
-const ticketRepository = new TicketPostgresRepository();
 
 export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 	.get(
@@ -44,11 +42,11 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 		},
 	)
 	.get(
-		":raffleId/tickets",
+		":raffleId",
 		async ({ params }) => {
 			const raffleId = params.raffleId;
 
-			return new RaffleTicketsGetter(ticketRepository).get({ raffleId });
+			return new RaffleDetailFinder(repository).get({ raffleId });
 		},
 		{
 			params: t.Object({

@@ -1,8 +1,10 @@
 import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
 import { RaffleEntity } from "../../../shared/database/infrastructure/postgres/entities/RaffleEntity";
+import { TicketEntity } from "../../../shared/database/infrastructure/postgres/entities/TicketEntity";
 import { Raffle } from "../domain/Raffle";
 import { RaffleRepository } from "../domain/RaffleRepository";
 import { RaffleStatus } from "../domain/RaffleStatus.enum";
+import { Ticket } from "../tickets/domain/Ticket";
 
 export class RafflePostgresRepository implements RaffleRepository {
 	async save(raffle: Raffle): Promise<void> {
@@ -59,5 +61,27 @@ export class RafflePostgresRepository implements RaffleRepository {
 				status: raffleEntity.status,
 			});
 		});
+	}
+
+	async getTickets(raffleId: string): Promise<Ticket[]> {
+		const repository = dataSource.getRepository(TicketEntity);
+
+		const tickets = await repository.find({
+			where: {
+				raffleId,
+			},
+		});
+
+		return tickets.map((ticket) => Ticket.from(ticket));
+	}
+
+	async findById(raffleId: string): Promise<Raffle | null> {
+		const repository = dataSource.getRepository(RaffleEntity);
+		const raffleEntity = await repository.findOne({ where: { id: raffleId } });
+		if (!raffleEntity) {
+			return null;
+		}
+
+		return Raffle.from(raffleEntity);
 	}
 }
