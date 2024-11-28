@@ -26,7 +26,10 @@ export class UserEntity {
 	dni: string;
 
 	@Column({ nullable: true, type: "varchar" })
-	avatar: string | null;
+	avatar: string;
+
+	@Column({ type: "varchar" })
+	password: string;
 
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;

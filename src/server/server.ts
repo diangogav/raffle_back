@@ -7,6 +7,7 @@ import { Logger } from "../shared/logger/domain/Logger";
 
 import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
+import { userRoutes } from "./routes/user-routes";
 
 export class Server {
 	private readonly app: Elysia;
@@ -38,7 +39,7 @@ export class Server {
 			.use(healthCheckRoutes);
 		// @ts-expect-error linter not config correctly
 		this.app.group("/api/v1", (app: Elysia) => {
-			return app.use(raffleRoutes);
+			return app.use(raffleRoutes).use(userRoutes);
 		});
 		this.logger = logger;
 	}
