@@ -10,11 +10,6 @@ export class RaffleDetailFinder {
 			throw new NotFoundError("Raffle not found");
 		}
 
-		const tickets = await this.repository.getTickets(raffleId);
-
-		return {
-			...raffle,
-			tickets,
-		};
+		return raffle.detailPresentation();
 	}
 }

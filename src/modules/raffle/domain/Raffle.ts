@@ -1,3 +1,5 @@
+import { Ticket } from "../tickets/domain/Ticket";
+
 import { RaffleStatus } from "./RaffleStatus.enum";
 import { TicketPrice } from "./TicketPrice";
 import { TotalTickets } from "./TotalTickets";
@@ -12,6 +14,7 @@ export type RaffleAttributes = {
 	userId: string;
 	cover: string;
 	status: RaffleStatus;
+	tickets: Ticket[];
 };
 
 export type RaffleDateAttributes = {
@@ -31,6 +34,7 @@ export class Raffle {
 	public readonly userId: string;
 	public readonly cover: string;
 	public readonly status: RaffleStatus;
+	private readonly tickets: Ticket[];
 
 	private constructor(data: RaffleAttributes & RaffleDateAttributes) {
 		this.id = data.id;
@@ -44,16 +48,32 @@ export class Raffle {
 		this.userId = data.userId;
 		this.cover = data.cover;
 		this.status = data.status;
+		this.tickets = data.tickets;
 	}
 
 	static create(data: Omit<RaffleAttributes, "status">): Raffle {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 
-		return new Raffle({ ...data, status: RaffleStatus.PENDING, createdAt, updatedAt });
+		return new Raffle({ ...data, status: RaffleStatus.PENDING, createdAt, updatedAt, tickets: [] });
 	}
 
 	static from(data: RaffleAttributes & RaffleDateAttributes): Raffle {
 		return new Raffle(data);
+	}
+
+	detailPresentation(): RaffleAttributes {
+		return {
+			id: this.id,
+			title: this.title,
+			description: this.description,
+			ticketPrice: this.ticketPrice,
+			endDate: this.endDate,
+			totalTickets: this.totalTickets,
+			userId: this.userId,
+			cover: this.cover,
+			status: this.status,
+			tickets: this.tickets,
+		};
 	}
 }

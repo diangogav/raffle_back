@@ -59,6 +59,7 @@ export class RafflePostgresRepository implements RaffleRepository {
 				createdAt: raffleEntity.createdAt,
 				updatedAt: raffleEntity.updatedAt,
 				status: raffleEntity.status,
+				tickets: [],
 			});
 		});
 	}
@@ -82,6 +83,8 @@ export class RafflePostgresRepository implements RaffleRepository {
 			return null;
 		}
 
-		return Raffle.from(raffleEntity);
+		const tickets = await this.getTickets(raffleId);
+
+		return Raffle.from({ ...raffleEntity, tickets });
 	}
 }
