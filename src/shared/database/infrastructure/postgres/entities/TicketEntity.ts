@@ -2,17 +2,18 @@ import {
 	Column,
 	CreateDateColumn,
 	DeleteDateColumn,
-	Entity,
+	Entity, Index,
 	JoinColumn,
 	ManyToOne,
 	PrimaryColumn,
-	UpdateDateColumn,
+	UpdateDateColumn
 } from "typeorm";
 
 import { RaffleEntity } from "./RaffleEntity";
 import { UserEntity } from "./UserEntity";
 
 @Entity({ name: "tickets" })
+@Index(["ticketNumber", "raffleId"], { unique: true })
 export class TicketEntity {
 	@PrimaryColumn("uuid")
 	id: string;

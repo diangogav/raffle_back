@@ -87,4 +87,15 @@ export class RafflePostgresRepository implements RaffleRepository {
 
 		return Raffle.from({ ...raffleEntity, tickets });
 	}
+
+	async saveTicket(ticket: Ticket): Promise<void> {
+		const repository = dataSource.getRepository(TicketEntity);
+		const ticketEntity = repository.create({
+			id: ticket.id,
+			ticketNumber: ticket.ticketNumber,
+			userId: ticket.userId,
+			raffleId: ticket.raffleId,
+		});
+		await repository.save(ticketEntity);
+	}
 }

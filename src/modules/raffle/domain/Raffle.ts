@@ -1,3 +1,6 @@
+import { randomUUID } from "crypto";
+
+import { ConflictError, InvalidArgumentError } from "../../../shared/errors";
 import { Ticket } from "../tickets/domain/Ticket";
 
 import { RaffleStatus } from "./RaffleStatus.enum";
@@ -60,6 +63,36 @@ export class Raffle {
 
 	static from(data: RaffleAttributes & RaffleDateAttributes): Raffle {
 		return new Raffle(data);
+	}
+
+	takeTicket(ticketNumber: number, userId: string): Ticket {
+		if (this.status !== RaffleStatus.ONGOING) {
+			throw new Error(`Raffle with id ${this.id} not active.`);
+		}
+
+		const ticketTaken = this.tickets.find((ticket) => +ticket.ticketNumber === ticketNumber);
+		if (ticketTaken) {
+			throw new ConflictError(`Ticket ${ticketNumber} already taken.`);
+		}
+
+		if (!(ticketNumber >= 1 && ticketNumber <= this.totalTickets)) {
+			throw new InvalidArgumentError(`Ticket ${ticketNumber} not valid`);
+		}
+
+		const id = randomUUID();
+
+		const ticket = Ticket.create({
+			id,
+			ticketNumber: ticketNumber.toString(),
+			userId,
+			raffleId: this.id,
+		});
+
+		console.log(ticket)
+
+		this.tickets.push(ticket);
+
+		return ticket;
 	}
 
 	detailPresentation(): RaffleAttributes {

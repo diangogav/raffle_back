@@ -27,7 +27,7 @@ export class Ticket {
 		this.deletedAt = data.deletedAt;
 	}
 
-	static create(data: Omit<TicketAttributes, "createdAt" | "updatedAt">): Ticket {
+	static create(data: Omit<TicketAttributes, "createdAt" | "updatedAt" | "deletedAt">): Ticket {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 

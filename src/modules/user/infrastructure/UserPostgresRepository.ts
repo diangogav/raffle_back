@@ -29,4 +29,15 @@ export class UserPostgresRepository implements UserRepository {
 
 		return User.from(userEntity);
 	}
+
+	async findById(id: string): Promise<User | null> {
+		const repository = dataSource.getRepository(UserEntity);
+		const userEntity = await repository.findOne({ where: { id } });
+
+		if (!userEntity) {
+			return null;
+		}
+
+		return User.from(userEntity);
+	}
 }
