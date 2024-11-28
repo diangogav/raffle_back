@@ -10,19 +10,19 @@ export class UserEntity {
 	@Column({ type: "varchar" })
 	name: string;
 
-	@Column({ type: "varchar", name: "last_name" })
+	@Column({ type: "varchar", name: "last_name", nullable: true })
 	lastName: string;
 
-	@Column({ type: "varchar" })
+	@Column({ type: "varchar", nullable: true })
 	address: string;
 
 	@Column({ unique: true, type: "varchar" })
 	email: string;
 
-	@Column({ unique: true, type: "varchar" })
+	@Column({ unique: true, type: "varchar", nullable: true })
 	phone: string;
 
-	@Column({ unique: true, type: "varchar" })
+	@Column({ unique: true, type: "varchar", nullable: true })
 	dni: string;
 
 	@Column({ nullable: true, type: "varchar" })
