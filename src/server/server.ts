@@ -18,6 +18,8 @@ export class Server {
 			.use(cors())
 			.use(swagger())
 			.onError(({ error, set }) => {
+				this.logger.error(error);
+
 				if (error instanceof ConflictError) {
 					set.status = 409;
 				}
