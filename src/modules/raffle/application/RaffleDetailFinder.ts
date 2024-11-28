@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors";
 import { RaffleRepository } from "../domain/RaffleRepository";
 
 export class RaffleDetailFinder {
@@ -6,7 +7,7 @@ export class RaffleDetailFinder {
 	async get({ raffleId }: { raffleId: string }): Promise<unknown> {
 		const raffle = await this.repository.findById(raffleId);
 		if (!raffle) {
-			throw new Error("Raffle not found");
+			throw new NotFoundError("Raffle not found");
 		}
 
 		const tickets = await this.repository.getTickets(raffleId);
