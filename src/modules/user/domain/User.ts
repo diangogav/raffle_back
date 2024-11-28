@@ -48,8 +48,9 @@ export class User {
 	static create(data: UserAttributes): User {
 		const createdAt = new Date();
 		const updatedAt = new Date();
+		const email = data.email.toLowerCase();
 
-		return new User({ ...data, createdAt, updatedAt, deletedAt: null });
+		return new User({ ...data, email, createdAt, updatedAt, deletedAt: null });
 	}
 
 	static from(data: UserAttributes & UserDateAttributes): User {
