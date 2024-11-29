@@ -88,8 +88,6 @@ export class Raffle {
 			raffleId: this.id,
 		});
 
-		console.log(ticket)
-
 		this.tickets.push(ticket);
 
 		return ticket;
