@@ -36,7 +36,7 @@ export class Raffle {
 	public readonly totalTickets: number;
 	public readonly userId: string;
 	public readonly cover: string;
-	public readonly status: RaffleStatus;
+	private _status: RaffleStatus;
 	private readonly tickets: Ticket[];
 
 	private constructor(data: RaffleAttributes & RaffleDateAttributes) {
@@ -50,7 +50,7 @@ export class Raffle {
 		this.totalTickets = new TotalTickets(data.totalTickets).value;
 		this.userId = data.userId;
 		this.cover = data.cover;
-		this.status = data.status;
+		this._status = data.status;
 		this.tickets = data.tickets;
 	}
 
@@ -66,29 +66,14 @@ export class Raffle {
 	}
 
 	takeTicket(ticketNumber: number, userId: string): Ticket {
-		if (this.status !== RaffleStatus.ONGOING) {
-			throw new Error(`Raffle with id ${this.id} not active.`);
-		}
-
-		const ticketTaken = this.tickets.find((ticket) => +ticket.ticketNumber === ticketNumber);
-		if (ticketTaken) {
-			throw new ConflictError(`Ticket ${ticketNumber} already taken.`);
-		}
-
-		if (!(ticketNumber >= 1 && ticketNumber <= this.totalTickets)) {
-			throw new InvalidArgumentError(`Ticket ${ticketNumber} not valid`);
-		}
+		this.IsValidTicket(ticketNumber);
 
 		const id = randomUUID();
+		const ticket = this.generateTicket(id, ticketNumber, userId);
 
-		const ticket = Ticket.create({
-			id,
-			ticketNumber: ticketNumber.toString(),
-			userId,
-			raffleId: this.id,
-		});
-
-		this.tickets.push(ticket);
+		if (this.tickets.length === this.totalTickets) {
+			this._status = RaffleStatus.CLOSED;
+		}
 
 		return ticket;
 	}
@@ -103,8 +88,47 @@ export class Raffle {
 			totalTickets: this.totalTickets,
 			userId: this.userId,
 			cover: this.cover,
-			status: this.status,
+			status: this._status,
 			tickets: this.tickets,
 		};
+	}
+
+	private generateTicket(
+		id: `${string}-${string}-${string}-${string}-${string}`,
+		ticketNumber: number,
+		userId: string,
+	) {
+		const ticket = Ticket.create({
+			id,
+			ticketNumber: ticketNumber.toString(),
+			userId,
+			raffleId: this.id,
+		});
+
+		this.tickets.push(ticket);
+
+		return ticket;
+	}
+
+	private IsValidTicket(ticketNumber: number) {
+		if (this._status !== RaffleStatus.ONGOING) {
+			throw new Error(`Raffle with id ${this.id} not active.`);
+		}
+		const ticketTaken = this.tickets.find((ticket) => +ticket.ticketNumber === ticketNumber);
+		if (ticketTaken) {
+			throw new ConflictError(`Ticket ${ticketNumber} already taken.`);
+		}
+
+		if (!(ticketNumber >= 1 && ticketNumber <= this.totalTickets)) {
+			throw new InvalidArgumentError(`Ticket ${ticketNumber} not valid`);
+		}
+	}
+
+	get ticketsPurchased(): number[] {
+		return this.tickets.map((ticket) => +ticket.ticketNumber);
+	}
+
+	get status(): RaffleStatus {
+		return this._status;
 	}
 }

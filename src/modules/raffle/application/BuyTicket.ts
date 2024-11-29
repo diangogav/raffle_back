@@ -1,20 +1,12 @@
 import { ConflictError } from "../../../shared/errors";
 import { RaffleRepository } from "../domain/RaffleRepository";
 
+import { BuyTicketRequestDto } from "./dtos/BuyTicketRequestDto";
+
 export class BuyTicket {
 	constructor(private readonly repository: RaffleRepository) {}
 
-	async buy({
-		ticketNumbers,
-		raffleId,
-		userId,
-	}: {
-		userId: string;
-		ticketNumbers: number[];
-		raffleId: string;
-	}): Promise<void> {
-		console.log("raffleId", raffleId)
-		console.log("userId", userId)
+	async buy({ ticketNumbers, raffleId, userId }: BuyTicketRequestDto): Promise<void> {
 		const raffle = await this.repository.findById(raffleId);
 
 		if (!raffle) {
