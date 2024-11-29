@@ -2,11 +2,12 @@ import {
 	Column,
 	CreateDateColumn,
 	DeleteDateColumn,
-	Entity, Index,
+	Entity,
+	Index,
 	JoinColumn,
 	ManyToOne,
 	PrimaryColumn,
-	UpdateDateColumn
+	UpdateDateColumn,
 } from "typeorm";
 
 import { RaffleEntity } from "./RaffleEntity";
