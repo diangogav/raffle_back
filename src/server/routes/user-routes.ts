@@ -1,8 +1,10 @@
+import bearer from "@elysiajs/bearer";
 import { randomUUID } from "crypto";
 import { Elysia, t } from "elysia";
 
 import { config } from "../../config";
 import { UserAuth } from "../../modules/auth/application/UserAuth";
+import { UserFinder } from "../../modules/user/application/UserFinder";
 import { UserRegister } from "../../modules/user/application/UserRegister";
 import { UserPostgresRepository } from "../../modules/user/infrastructure/UserPostgresRepository";
 import { Hash } from "../../shared/Hash";
@@ -20,7 +22,7 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 		async ({ body }) => {
 			const id = randomUUID();
 
-			return new UserRegister(repository, hash, logger).register({ ...body, id });
+			return new UserRegister(repository, hash, logger, jwt).register({ ...body, id });
 		},
 		{
 			body: t.Object({
@@ -43,4 +45,10 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 				password: t.String(),
 			}),
 		},
-	);
+	)
+	.use(bearer())
+	.get("/profile", async ({ bearer }) => {
+		const token = jwt.decode(bearer as string) as { id: string };
+
+		return new UserFinder(repository).find({ userId: token.id });
+	});
