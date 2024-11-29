@@ -1,5 +1,6 @@
 import { ConflictError } from "../../../shared/errors";
 import { Hash } from "../../../shared/Hash";
+import { JWT } from "../../../shared/JWT";
 import { Logger } from "../../../shared/logger/domain/Logger";
 import { User } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
@@ -9,6 +10,7 @@ export class UserRegister {
 		private readonly repository: UserRepository,
 		private readonly hash: Hash,
 		private readonly logger: Logger,
+		private readonly jwt: JWT,
 	) {}
 
 	async register({
@@ -36,6 +38,10 @@ export class UserRegister {
 
 		await this.repository.create(user);
 
-		return user.toJson();
+		const token = this.jwt.generate({ id: user.id, name: user.name, email: user.email });
+
+		return {
+			token,
+		};
 	}
 }
