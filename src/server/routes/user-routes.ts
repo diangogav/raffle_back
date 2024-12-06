@@ -1,6 +1,7 @@
 import bearer from "@elysiajs/bearer";
 import { randomUUID } from "crypto";
 import { Elysia, t } from "elysia";
+import { UserUpdater } from "src/modules/user/application/UserUpdater";
 
 import { config } from "../../config";
 import { UserAuth } from "../../modules/auth/application/UserAuth";
@@ -51,4 +52,27 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 		const token = jwt.decode(bearer as string) as { id: string };
 
 		return new UserFinder(repository).find({ userId: token.id });
-	});
+	})
+	.use(bearer())
+	.patch(
+		"/",
+		async ({ body, bearer }) => {
+			const token = jwt.decode(bearer as string) as { id: string };
+
+			return new UserUpdater(repository, hash).update(token.id, body);
+		},
+		{
+			body: t.Object({
+				name: t.Optional(t.String()),
+				lastName: t.Optional(t.String()),
+				email: t.Optional(
+					t.String({
+						format: "email",
+					}),
+				),
+				phone: t.Optional(t.String()),
+				password: t.Optional(t.String({ minLength: 4 })),
+				newPassword: t.Optional(t.String({ minLength: 4 })),
+			}),
+		},
+	);

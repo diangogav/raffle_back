@@ -11,6 +11,9 @@ export class UserPostgresRepository implements UserRepository {
 			password: user.password,
 			email: user.email,
 			name: user.name,
+			lastName: user.lastName,
+			address: user.address,
+			phone: user.phone,
 		});
 		await repository.save(userProfileEntity);
 	}

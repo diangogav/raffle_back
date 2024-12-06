@@ -11,16 +11,16 @@ export class UserEntity {
 	name: string;
 
 	@Column({ type: "varchar", name: "last_name", nullable: true })
-	lastName: string;
+	lastName?: string | null;
 
 	@Column({ type: "varchar", nullable: true })
-	address: string;
+	address?: string | null;
 
 	@Column({ unique: true, type: "varchar" })
 	email: string;
 
 	@Column({ unique: true, type: "varchar", nullable: true })
-	phone: string;
+	phone?: string | null;
 
 	@Column({ unique: true, type: "varchar", nullable: true })
 	dni: string;
