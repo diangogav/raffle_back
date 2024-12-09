@@ -2,6 +2,7 @@ import { DataSource, DataSourceOptions } from "typeorm";
 
 import { config } from "../../../../config";
 
+import { PaymentEntity } from "./entities/PaymentEntity";
 import { RaffleEntity } from "./entities/RaffleEntity";
 import { TicketEntity } from "./entities/TicketEntity";
 import { UserEntity } from "./entities/UserEntity";
@@ -18,7 +19,7 @@ const options: DataSourceOptions = {
 	ssl: {
 		rejectUnauthorized: false,
 	},
-	entities: [UserEntity, RaffleEntity, TicketEntity],
+	entities: [UserEntity, RaffleEntity, TicketEntity, PaymentEntity],
 	subscribers: [],
 	migrations: ["src/shared/database/infrastructure/postgres/migrations/*.ts"],
 };
