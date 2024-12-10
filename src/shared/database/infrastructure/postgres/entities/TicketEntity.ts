@@ -36,6 +36,9 @@ export class TicketEntity {
 	@Column({ type: "uuid", name: "raffle_id" })
 	raffleId: string;
 
+	@Column({ type: "uuid", name: "payment_id", nullable: true })
+	paymentId?: string | null;
+
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;
 

@@ -16,7 +16,7 @@ export class PaymentEntity {
 	@PrimaryColumn("uuid")
 	id: string;
 
-	@Column({ type: "varchar" })
+	@Column({ type: "varchar", unique: true })
 	reference: string;
 
 	@Column({ type: "numeric" })

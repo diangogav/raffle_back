@@ -95,6 +95,7 @@ export class RafflePostgresRepository implements RaffleRepository {
 			ticketNumber: ticket.ticketNumber,
 			userId: ticket.userId,
 			raffleId: ticket.raffleId,
+			paymentId: ticket.paymentId,
 		});
 		await repository.save(ticketEntity);
 	}

@@ -65,11 +65,11 @@ export class Raffle {
 		return new Raffle(data);
 	}
 
-	takeTicket(ticketNumber: number, userId: string): Ticket {
+	takeTicket(ticketNumber: number, userId: string, paymentId: string): Ticket {
 		this.IsValidTicket(ticketNumber);
 
 		const id = randomUUID();
-		const ticket = this.generateTicket(id, ticketNumber, userId);
+		const ticket = this.generateTicket(id, ticketNumber, userId, paymentId);
 
 		if (this.tickets.length === this.totalTickets) {
 			this._status = RaffleStatus.CLOSED;
@@ -97,12 +97,14 @@ export class Raffle {
 		id: `${string}-${string}-${string}-${string}-${string}`,
 		ticketNumber: number,
 		userId: string,
+		paymentId: string,
 	) {
 		const ticket = Ticket.create({
 			id,
 			ticketNumber: ticketNumber.toString(),
 			userId,
 			raffleId: this.id,
+			paymentId,
 		});
 
 		this.tickets.push(ticket);

@@ -6,6 +6,7 @@ export type TicketAttributes = {
 	createdAt: Date;
 	updatedAt: Date;
 	deletedAt: Date | null;
+	paymentId?: string | null;
 };
 
 export class Ticket {
@@ -16,6 +17,7 @@ export class Ticket {
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public readonly deletedAt: Date | null;
+	public readonly paymentId?: string | null;
 
 	private constructor(data: TicketAttributes) {
 		this.id = data.id;
@@ -25,6 +27,7 @@ export class Ticket {
 		this.createdAt = data.createdAt;
 		this.updatedAt = data.updatedAt;
 		this.deletedAt = data.deletedAt;
+		this.paymentId = data.paymentId;
 	}
 
 	static create(data: Omit<TicketAttributes, "createdAt" | "updatedAt" | "deletedAt">): Ticket {
