@@ -1,6 +1,7 @@
 import { Ticket } from "../tickets/domain/Ticket";
 
 import { Raffle } from "./Raffle";
+import { RaffleStatus } from "./RaffleStatus.enum";
 
 export interface RaffleRepository {
 	save(raffle: Raffle): Promise<void>;
@@ -18,5 +19,5 @@ export interface RaffleRepository {
 	getTickets(raffleId: string): Promise<Ticket[]>;
 	findById(raffleId: string): Promise<Raffle | null>;
 	saveTicket(ticket: Ticket): Promise<void>;
-	rafflesWithTickets(userId: string): Promise<Raffle[]>;
+	rafflesWithTickets(userId: string, statuses: RaffleStatus[]): Promise<Raffle[]>;
 }

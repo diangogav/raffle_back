@@ -100,8 +100,10 @@ export class RafflePostgresRepository implements RaffleRepository {
 		await repository.save(ticketEntity);
 	}
 
-	async rafflesWithTickets(userId: string): Promise<Raffle[]> {
+	async rafflesWithTickets(userId: string, statuses: RaffleStatus[]): Promise<Raffle[]> {
 		const repository = dataSource.getRepository(RaffleEntity);
+
+		const formattedStatuses = statuses.map((status) => `'${status}'`).join(", ");
 
 		const raffles = await repository.query(`
 			SELECT 
@@ -139,7 +141,8 @@ export class RafflePostgresRepository implements RaffleRepository {
 				r.id = t.raffle_id
 		WHERE 
 				t.user_id = '${userId}'
-    AND r.status = 'ONGOING'
+    AND 
+				r.status IN (${formattedStatuses})
 		GROUP BY 
 				r.id;
 		`);

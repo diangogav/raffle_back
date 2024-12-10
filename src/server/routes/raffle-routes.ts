@@ -9,6 +9,7 @@ import { BuyTicket } from "../../modules/raffle/application/BuyTicket";
 import { OngoingRafflesGetter } from "../../modules/raffle/application/OngoingRafflesGetter";
 import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetailFinder";
 import { RafflesResumeGetter } from "../../modules/raffle/application/RafflesResumeGetter";
+import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
 import { JWT } from "../../shared/JWT";
 
@@ -91,8 +92,33 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 		},
 	)
 	.use(bearer())
-	.get("/resume", ({ bearer }) => {
+	.get("/not-drawn", ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
 
-		return new RafflesResumeGetter(repository).get({ userId: token.id });
+		return new RafflesResumeGetter(repository).get({
+			userId: token.id,
+			statuses: [RaffleStatus.ONGOING, RaffleStatus.CLOSED],
+		});
+	})
+	.get("/drawn", ({ bearer }) => {
+		const token = jwt.decode(bearer as string) as { id: string };
+
+		return new RafflesResumeGetter(repository).get({
+			userId: token.id,
+			statuses: [RaffleStatus.DRAWN, RaffleStatus.WINNER_CONFIRMED, RaffleStatus.FINISHED],
+		});
+	})
+	.get("/", ({ bearer }) => {
+		const token = jwt.decode(bearer as string) as { id: string };
+
+		return new RafflesResumeGetter(repository).get({
+			userId: token.id,
+			statuses: [
+				RaffleStatus.ONGOING,
+				RaffleStatus.CLOSED,
+				RaffleStatus.DRAWN,
+				RaffleStatus.WINNER_CONFIRMED,
+				RaffleStatus.FINISHED,
+			],
+		});
 	});
