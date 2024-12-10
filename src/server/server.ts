@@ -3,6 +3,7 @@ import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
 import { AuthenticationError, ConflictError, InvalidArgumentError, NotFoundError } from "../shared/errors";
+import { UnauthorizedError } from "../shared/errors/UnauthorizedError";
 import { Logger } from "../shared/logger/domain/Logger";
 
 import { healthCheckRoutes } from "./routes/health-check-routes";
@@ -34,6 +35,10 @@ export class Server {
 
 				if (error instanceof InvalidArgumentError) {
 					set.status = 400;
+				}
+
+				if (error instanceof UnauthorizedError) {
+					set.status = 401;
 				}
 
 				return error;

@@ -1,4 +1,5 @@
 import { NotFoundError } from "../../../shared/errors/NotFoundError";
+import { UnauthorizedError } from "../../../shared/errors/UnauthorizedError";
 import { Hash } from "../../../shared/Hash";
 import { UpdateUserParams } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
@@ -9,11 +10,26 @@ export class UserUpdater {
 		private readonly hash: Hash,
 	) {}
 
-	async update(userId: string, payload: UpdateUserParams & { newPassword?: string }): Promise<void> {
+	async update(
+		userId: string,
+		payload: UpdateUserParams & { currentPassword?: string; newPassword?: string },
+	): Promise<void> {
 		const user = await this.repository.findById(userId);
 
 		if (!user) {
 			throw new NotFoundError(`User with id ${userId} not found`);
+		}
+
+		if (payload.newPassword) {
+			if (!payload.currentPassword) {
+				throw new UnauthorizedError("Current password is required to set a new password");
+			}
+
+			const isCurrentPasswordValid = await this.hash.compare(payload.currentPassword, user.password);
+
+			if (!isCurrentPasswordValid) {
+				throw new UnauthorizedError("Current password is incorrect");
+			}
 		}
 
 		let updatedPassword = user.password;
