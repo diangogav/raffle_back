@@ -99,4 +99,68 @@ export class RafflePostgresRepository implements RaffleRepository {
 		});
 		await repository.save(ticketEntity);
 	}
+
+	async rafflesWithTickets(userId: string): Promise<Raffle[]> {
+		const repository = dataSource.getRepository(RaffleEntity);
+
+		const raffles = await repository.query(`
+			SELECT 
+				r.id AS raffle_id,
+				r.title,
+				r.description,
+				r.ticket_price,
+				r.end_date,
+				r.total_tickets,
+				r.user_id AS raffle_user_id,
+				r.cover,
+				r.status,
+				r.created_at AS raffle_created_at,
+				r.updated_at AS raffle_updated_at,
+				r.deleted_at AS raffle_deleted_at,
+    COALESCE(
+        json_agg(
+            jsonb_build_object(
+                'id', t.id,
+                'ticket_number', t.ticket_number,
+                'user_id', t.user_id,
+                'payment_id', t.payment_id,
+                'created_at', t.created_at,
+                'updated_at', t.updated_at,
+                'deleted_at', t.deleted_at
+            )
+        ) FILTER (WHERE t.id IS NOT NULL), 
+        '[]'
+    ) AS tickets
+		FROM 
+				raffles r
+		LEFT JOIN 
+				tickets t
+		ON 
+				r.id = t.raffle_id
+		WHERE 
+				t.user_id = '${userId}'
+    AND r.status = 'ONGOING'
+		GROUP BY 
+				r.id;
+		`);
+
+		return raffles.map((raffle) =>
+			Raffle.from({
+				id: raffle.id,
+				title: raffle.title,
+				description: raffle.description,
+				ticketPrice: raffle.ticket_price,
+				endDate: raffle.end_date,
+				totalTickets: raffle.total_tickets,
+				userId: raffle.user_id,
+				cover: raffle.cover,
+				createdAt: raffle.created_at,
+				updatedAt: raffle.updated_at,
+				status: raffle.status,
+				tickets: raffle.tickets.map((ticket) =>
+					Ticket.from({ ...ticket, ticketNumber: ticket.ticket_number, createdAt: ticket.created_at }),
+				),
+			}),
+		);
+	}
 }

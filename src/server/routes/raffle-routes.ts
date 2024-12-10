@@ -8,6 +8,7 @@ import { PaymentPostgresRepository } from "../../modules/payment/infrastructure/
 import { BuyTicket } from "../../modules/raffle/application/BuyTicket";
 import { OngoingRafflesGetter } from "../../modules/raffle/application/OngoingRafflesGetter";
 import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetailFinder";
+import { RafflesResumeGetter } from "../../modules/raffle/application/RafflesResumeGetter";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
 import { JWT } from "../../shared/JWT";
 
@@ -88,4 +89,10 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 				raffleId: t.String(),
 			}),
 		},
-	);
+	)
+	.use(bearer())
+	.get("/resume", ({ bearer }) => {
+		const token = jwt.decode(bearer as string) as { id: string };
+
+		return new RafflesResumeGetter(repository).get({ userId: token.id });
+	});
