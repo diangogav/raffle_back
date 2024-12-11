@@ -152,7 +152,7 @@ export class RafflePostgresRepository implements RaffleRepository {
 
 		return raffles.map((raffle) =>
 			Raffle.from({
-				id: raffle.id,
+				id: raffle.raffle_id,
 				title: raffle.title,
 				description: raffle.description,
 				ticketPrice: raffle.ticket_price,
