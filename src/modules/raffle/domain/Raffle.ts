@@ -70,8 +70,7 @@ export class Raffle {
 
 		const id = randomUUID();
 		const ticket = this.generateTicket(id, ticketNumber, userId, paymentId);
-
-		if (this.tickets.length === this.totalTickets) {
+		if (+this.tickets.length === +this.totalTickets) {
 			this._status = RaffleStatus.CLOSED;
 		}
 
