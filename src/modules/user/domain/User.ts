@@ -79,6 +79,8 @@ export class User {
 			id: this.id,
 			name: this.name,
 			email: this.email,
+			lastName: this.lastName,
+			phone: this.phone,
 		};
 	}
 }
