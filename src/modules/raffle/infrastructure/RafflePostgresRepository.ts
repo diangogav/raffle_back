@@ -144,7 +144,9 @@ export class RafflePostgresRepository implements RaffleRepository {
     AND 
 				r.status IN (${formattedStatuses})
 		GROUP BY 
-				r.id;
+				r.id
+		ORDER BY end_Date DESC
+		LIMIT 100;
 		`);
 
 		return raffles.map((raffle) =>
