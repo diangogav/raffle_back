@@ -12,7 +12,7 @@ export class UserUpdater {
 
 	async update(
 		userId: string,
-		payload: UpdateUserParams & { currentPassword?: string; newPassword?: string },
+		payload: UpdateUserParams & { password?: string; newPassword?: string },
 	): Promise<void> {
 		const user = await this.repository.findById(userId);
 
@@ -21,11 +21,11 @@ export class UserUpdater {
 		}
 
 		if (payload.newPassword) {
-			if (!payload.currentPassword) {
+			if (!payload.password) {
 				throw new UnauthorizedError("Current password is required to set a new password");
 			}
 
-			const isCurrentPasswordValid = await this.hash.compare(payload.currentPassword, user.password);
+			const isCurrentPasswordValid = await this.hash.compare(payload.password, user.password);
 
 			if (!isCurrentPasswordValid) {
 				throw new UnauthorizedError("Current password is incorrect");
