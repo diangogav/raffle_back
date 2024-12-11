@@ -18,6 +18,7 @@ export class RafflePostgresRepository implements RaffleRepository {
 			totalTickets: raffle.totalTickets,
 			userId: raffle.userId,
 			cover: raffle.cover,
+			status: raffle.status,
 		});
 		await repository.save(raffleEntity);
 	}

@@ -43,6 +43,8 @@ export class BuyTicket {
 		await this.paymentRepository.save(payment);
 
 		await Promise.allSettled(tickets.map((ticket) => this.repository.saveTicket(ticket)));
+
+		await this.repository.save(raffle);
 	}
 
 	private ensurePaymentAmountIsValid({
