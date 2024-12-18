@@ -1,8 +1,13 @@
-import { Raffle } from "../domain/Raffle";
+import { RafflePresentation } from "../domain/Raffle";
 import { RaffleRepository } from "../domain/RaffleRepository";
 
+import { ExchangeRateRepository } from "./../../../shared/exchange-rate/domain/ExchangeRateRepository";
+
 export class OngoingRafflesGetter {
-	constructor(private readonly repository: RaffleRepository) {}
+	constructor(
+		private readonly repository: RaffleRepository,
+		private readonly exchangeRateRepository: ExchangeRateRepository,
+	) {}
 
 	async get({
 		limit,
@@ -14,12 +19,16 @@ export class OngoingRafflesGetter {
 		page: number;
 		field: string;
 		direction: "ASC" | "DESC";
-	}): Promise<Raffle[]> {
-		return await this.repository.getOngoingRafflesSortedBy({
+	}): Promise<RafflePresentation[]> {
+		const exchangeRate = await this.exchangeRateRepository.dollarToBCVRate();
+
+		const raffles = await this.repository.getOngoingRafflesSortedBy({
 			field,
 			direction,
 			limit,
 			page,
 		});
+
+		return raffles.map((raffle) => raffle.toJson(exchangeRate));
 	}
 }

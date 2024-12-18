@@ -13,8 +13,11 @@ import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
 import { JWT } from "../../shared/JWT";
 
+import { PyDollarExchangeRate } from "./../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
+
 const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();
+const exchangeRateRepository = new PyDollarExchangeRate();
 const jwt = new JWT(config.jwt);
 
 export const raffleRoutes = new Elysia({ prefix: "/raffles" })
@@ -26,7 +29,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 			const field = "createdAt";
 			const direction = "DESC";
 
-			return new OngoingRafflesGetter(repository).get({ limit, page, field, direction });
+			return new OngoingRafflesGetter(repository, exchangeRateRepository).get({ limit, page, field, direction });
 		},
 		{
 			query: t.Object({
@@ -43,7 +46,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 			const field = "ticketPrice";
 			const direction = "ASC";
 
-			return new OngoingRafflesGetter(repository).get({ limit, page, field, direction });
+			return new OngoingRafflesGetter(repository, exchangeRateRepository).get({ limit, page, field, direction });
 		},
 		{
 			query: t.Object({
@@ -57,7 +60,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 		async ({ params }) => {
 			const raffleId = params.raffleId;
 
-			return new RaffleDetailFinder(repository).get({ raffleId });
+			return new RaffleDetailFinder(repository, exchangeRateRepository).get({ raffleId });
 		},
 		{
 			params: t.Object({
@@ -95,7 +98,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 	.get("/not-drawn", ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
 
-		return new RafflesResumeGetter(repository).get({
+		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
 			statuses: [RaffleStatus.ONGOING, RaffleStatus.CLOSED],
 		});
@@ -103,7 +106,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 	.get("/drawn", ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
 
-		return new RafflesResumeGetter(repository).get({
+		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
 			statuses: [RaffleStatus.DRAWN, RaffleStatus.WINNER_CONFIRMED, RaffleStatus.FINISHED],
 		});
@@ -111,7 +114,7 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 	.get("/", ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
 
-		return new RafflesResumeGetter(repository).get({
+		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
 			statuses: [
 				RaffleStatus.ONGOING,

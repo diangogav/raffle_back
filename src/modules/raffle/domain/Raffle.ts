@@ -1,4 +1,5 @@
 import { randomUUID } from "crypto";
+import { ExchangeRate } from "src/shared/exchange-rate/domain/ExchangeRate";
 
 import { ConflictError, InvalidArgumentError } from "../../../shared/errors";
 import { Ticket } from "../tickets/domain/Ticket";
@@ -24,6 +25,8 @@ export type RaffleDateAttributes = {
 	createdAt: Date;
 	updatedAt: Date;
 };
+
+export type RafflePresentation = RaffleAttributes & RaffleDateAttributes & { ticketPriceBCV: number };
 
 export class Raffle {
 	public readonly id: string;
@@ -77,7 +80,7 @@ export class Raffle {
 		return ticket;
 	}
 
-	detailPresentation(): RaffleAttributes {
+	detailPresentation(exchangeRate: ExchangeRate): RaffleAttributes & { ticketPriceBCV: number } {
 		return {
 			id: this.id,
 			title: this.title,
@@ -89,6 +92,25 @@ export class Raffle {
 			cover: this.cover,
 			status: this._status,
 			tickets: this.tickets,
+			ticketPriceBCV: this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2),
+		};
+	}
+
+	toJson(exchangeRate: ExchangeRate): RafflePresentation {
+		return {
+			id: this.id,
+			title: this.title,
+			description: this.description,
+			ticketPrice: this.ticketPrice,
+			endDate: this.endDate,
+			createdAt: this.createdAt,
+			updatedAt: this.updatedAt,
+			totalTickets: this.totalTickets,
+			userId: this.userId,
+			cover: this.cover,
+			status: this._status,
+			tickets: this.tickets,
+			ticketPriceBCV: this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2),
 		};
 	}
 
@@ -109,6 +131,12 @@ export class Raffle {
 		this.tickets.push(ticket);
 
 		return ticket;
+	}
+
+	private toFixedNoRound(number: number, decimals: number) {
+		const factor = Math.pow(10, decimals);
+
+		return Math.floor(number * factor) / factor;
 	}
 
 	private IsValidTicket(ticketNumber: number) {
