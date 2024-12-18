@@ -13,14 +13,4 @@ export class UserFinder {
 
 		return user.toJson();
 	}
-
-	async get(): Promise<unknown> {
-		const users = await this.repository.get();
-
-		if (!users) {
-			throw new NotFoundError(`Users not found`);
-		}
-
-		return users;
-	}
 }
