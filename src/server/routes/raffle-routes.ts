@@ -76,7 +76,12 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 			const raffleId = params.raffleId;
 			const paymentId = randomUUID();
 
-			return new BuyTicket(repository, paymentRepository).buy({ ...body, userId: token.id, raffleId, paymentId });
+			return new BuyTicket(repository, paymentRepository, exchangeRateRepository).buy({
+				...body,
+				userId: token.id,
+				raffleId,
+				paymentId,
+			});
 		},
 		{
 			body: t.Object({

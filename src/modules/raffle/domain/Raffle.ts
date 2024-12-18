@@ -80,6 +80,10 @@ export class Raffle {
 		return ticket;
 	}
 
+	priceByExchangeRate(exchangeRate: ExchangeRate): number {
+		return this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2);
+	}
+
 	detailPresentation(exchangeRate: ExchangeRate): RaffleAttributes & { ticketPriceBCV: number } {
 		return {
 			id: this.id,
