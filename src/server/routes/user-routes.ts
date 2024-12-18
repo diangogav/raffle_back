@@ -1,6 +1,7 @@
 import bearer from "@elysiajs/bearer";
 import { randomUUID } from "crypto";
 import { Elysia, t } from "elysia";
+import { UserGetter } from "src/modules/user/application/UserGetter";
 import { UserUpdater } from "src/modules/user/application/UserUpdater";
 
 import { config } from "../../config";
@@ -47,6 +48,9 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 			}),
 		},
 	)
+	.get("/", async () => {
+		return new UserGetter(repository).get();
+	})
 	.use(bearer())
 	.get("/profile", async ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
