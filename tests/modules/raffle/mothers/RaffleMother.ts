@@ -24,8 +24,6 @@ export class RaffleMother {
 				RaffleStatus.DRAWN,
 				RaffleStatus.WINNER_CONFIRMED,
 				RaffleStatus.CANCELED,
-				RaffleStatus.UNDER_REVIEW,
-				RaffleStatus.PRIZE_DELIVERED,
 			]),
 		});
 	}
