@@ -43,4 +43,12 @@ export class UserPostgresRepository implements UserRepository {
 
 		return User.from(userEntity);
 	}
+
+	async get(): Promise<User[]> {
+		const repository = dataSource.getRepository(UserEntity);
+		const userEntities = await repository.find();
+		const users = userEntities.map((user) => User.from(user));
+
+		return users;
+	}
 }
