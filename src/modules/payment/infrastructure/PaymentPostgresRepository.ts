@@ -1,11 +1,12 @@
-import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
 import { PaymentEntity } from "../../../shared/database/infrastructure/postgres/entities/PaymentEntity";
 import { Payment } from "../domain/Payment";
 import { PaymentRepository } from "../domain/PaymentRepository";
 
-export class PaymentPostgresRepository implements PaymentRepository {
+import { PostgresTypeORMRepository } from "./../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
+
+export class PaymentPostgresRepository extends PostgresTypeORMRepository implements PaymentRepository {
 	async save(payment: Payment): Promise<void> {
-		const repository = dataSource.getRepository(PaymentEntity);
+		const repository = this.getRepository(PaymentEntity);
 		const paymentEntity = repository.create({
 			id: payment.id,
 			reference: payment.reference,

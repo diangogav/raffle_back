@@ -13,6 +13,7 @@ import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
 import { JWT } from "../../shared/JWT";
 
+import { PostgresTypeORM } from "./../../shared/database/infrastructure/postgres/PostgresTypeORM";
 import { PyDollarExchangeRate } from "./../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
 
 const repository = new RafflePostgresRepository();
@@ -75,13 +76,24 @@ export const raffleRoutes = new Elysia({ prefix: "/raffles" })
 			const token = jwt.decode(bearer as string) as { id: string };
 			const raffleId = params.raffleId;
 			const paymentId = randomUUID();
+			const transaction = PostgresTypeORM.getInstance();
 
-			return new BuyTicket(repository, paymentRepository, exchangeRateRepository).buy({
-				...body,
-				userId: token.id,
-				raffleId,
-				paymentId,
-			});
+			try {
+				await transaction.openTransaction();
+				const buyTicket = new BuyTicket(repository, paymentRepository, exchangeRateRepository);
+				await buyTicket.buy({
+					...body,
+					userId: token.id,
+					raffleId,
+					paymentId,
+				});
+				await transaction.commit();
+			} catch (error) {
+				await transaction.rollback();
+				throw error;
+			} finally {
+				await transaction.closeTransaction();
+			}
 		},
 		{
 			body: t.Object({

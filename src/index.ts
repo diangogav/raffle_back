@@ -4,8 +4,10 @@ import { Pino } from "./shared/logger/infrastructure/Pino";
 
 void (async () => {
 	const logger = new Pino();
-	const database = new PostgresTypeORM(logger);
-	await database.connect().catch((error) => logger.error(error));
+	PostgresTypeORM.getInstance()
+		.connect()
+		.then(() => logger.info("Connected to database"))
+		.catch((error) => logger.error(error));
 	const server = new Server(logger);
 	server.start();
 })();
