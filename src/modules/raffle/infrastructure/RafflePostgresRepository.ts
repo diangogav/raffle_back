@@ -6,9 +6,12 @@ import { RaffleRepository } from "../domain/RaffleRepository";
 import { RaffleStatus } from "../domain/RaffleStatus.enum";
 import { Ticket } from "../tickets/domain/Ticket";
 
-export class RafflePostgresRepository implements RaffleRepository {
+import { PostgresTypeORMRepository } from "./../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
+
+export class RafflePostgresRepository extends PostgresTypeORMRepository implements RaffleRepository {
 	async save(raffle: Raffle): Promise<void> {
-		const repository = dataSource.getRepository(RaffleEntity);
+		const repository = this.getRepository(RaffleEntity);
+
 		const raffleEntity = repository.create({
 			id: raffle.id,
 			title: raffle.title,
@@ -90,7 +93,8 @@ export class RafflePostgresRepository implements RaffleRepository {
 	}
 
 	async saveTicket(ticket: Ticket): Promise<void> {
-		const repository = dataSource.getRepository(TicketEntity);
+		const repository = this.getRepository(TicketEntity);
+
 		const ticketEntity = repository.create({
 			id: ticket.id,
 			ticketNumber: ticket.ticketNumber,
