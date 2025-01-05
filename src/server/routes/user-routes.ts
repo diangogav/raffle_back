@@ -1,8 +1,9 @@
 import bearer from "@elysiajs/bearer";
 import { randomUUID } from "crypto";
 import { Elysia, t } from "elysia";
-import { UserGetter } from "src/modules/user/application/UserGetter";
 import { UserUpdater } from "src/modules/user/application/UserUpdater";
+import { UserBackOfficeGetter } from "src/modules/user-back-office/application/UserBackOfficeGetter";
+import { UserBackOfficePostgresRepository } from "src/modules/user-back-office/infrastructure/UserBackOfficePostgresRepository";
 
 import { config } from "../../config";
 import { UserAuth } from "../../modules/auth/application/UserAuth";
@@ -14,6 +15,7 @@ import { JWT } from "../../shared/JWT";
 import { Pino } from "../../shared/logger/infrastructure/Pino";
 
 const repository = new UserPostgresRepository();
+const userBackOfficeRepository = new UserBackOfficePostgresRepository();
 const hash = new Hash();
 const logger = new Pino();
 const jwt = new JWT(config.jwt);
@@ -49,7 +51,7 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 		},
 	)
 	.get("/", async () => {
-		return new UserGetter(repository).get();
+		return new UserBackOfficeGetter(userBackOfficeRepository).get();
 	})
 	.use(bearer())
 	.get("/profile", async ({ bearer }) => {
