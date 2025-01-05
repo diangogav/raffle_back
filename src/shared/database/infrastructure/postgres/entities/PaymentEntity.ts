@@ -44,6 +44,9 @@ export class PaymentEntity {
 	@Column({ type: "uuid", name: "user_id" })
 	userId: string;
 
+	@Column({ type: "boolean", name: "verified", default: false })
+	verified: boolean;
+
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;
 
