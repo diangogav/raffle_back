@@ -10,6 +10,7 @@ export type PaymentAttributes = {
 	phone?: string | null;
 	email?: string | null;
 	userId: string;
+	verified: boolean;
 };
 
 export type PaymentDateAttributes = {
@@ -30,6 +31,7 @@ export abstract class Payment {
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public readonly deletedAt: Date | null;
+	public readonly verified: boolean;
 
 	constructor(data: PaymentAttributes & PaymentDateAttributes) {
 		if (!data.reference) {
@@ -47,5 +49,6 @@ export abstract class Payment {
 		this.userId = data.userId;
 		this.createdAt = data.createdAt;
 		this.updatedAt = data.updatedAt;
+		this.verified = data.verified;
 	}
 }

@@ -7,7 +7,7 @@ export class BinancePayment extends Payment {
 		super(data);
 	}
 
-	static create(data: PaymentAttributes): Payment {
+	static create(data: Omit<PaymentAttributes, "verified">): Payment {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 
@@ -19,6 +19,7 @@ export class BinancePayment extends Payment {
 			...data,
 			createdAt,
 			updatedAt,
+			verified: false,
 		});
 	}
 }

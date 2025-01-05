@@ -7,7 +7,7 @@ export class PagoMovilPayment extends Payment {
 		super(data);
 	}
 
-	static create(data: PaymentAttributes): Payment {
+	static create(data: Omit<PaymentAttributes, "verified">): Payment {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 
@@ -23,6 +23,7 @@ export class PagoMovilPayment extends Payment {
 			...data,
 			createdAt,
 			updatedAt,
+			verified: false,
 		});
 	}
 }

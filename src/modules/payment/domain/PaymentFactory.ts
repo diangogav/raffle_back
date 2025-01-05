@@ -4,7 +4,7 @@ import { Payment, PaymentAttributes } from "./Payment";
 import { PaymentMethod } from "./PaymentMethod.enum";
 
 export class PaymentFactory {
-	static create(data: PaymentAttributes): Payment {
+	static create(data: Omit<PaymentAttributes, "verified">): Payment {
 		switch (data.paymentMethod) {
 			case PaymentMethod.BINANCE:
 				return BinancePayment.create(data);
