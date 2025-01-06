@@ -1,9 +1,9 @@
 import { Elysia } from "elysia";
-import { ApproveTicketPaymentStatus } from "src/modules/ticket-backoffice/application/ApproveTicketPaymentStatus";
-import { DenyTicketPaymentStatus } from "src/modules/ticket-backoffice/application/DenyTicketPaymentStatus";
+import { ApproveTicketPayment } from "src/modules/ticket-backoffice/application/ApproveTicketPayment";
+import { DenyTicketPayment } from "src/modules/ticket-backoffice/application/DenyTicketPayment";
 import { PostgresTypeORM } from "src/shared/database/infrastructure/postgres/PostgresTypeORM";
 
-import { TicketBackOfficePostgresRepository } from "./../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
+import { TicketBackOfficePostgresRepository } from "../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
 
 const repository = new TicketBackOfficePostgresRepository();
 
@@ -16,7 +16,7 @@ export const ticketBackOfficeRoutes = new Elysia({
 	.patch("/:ticketId/approve", async ({ params }) => {
 		const ticketId = params.ticketId;
 
-		return new ApproveTicketPaymentStatus(repository).approve({ ticketId });
+		return new ApproveTicketPayment(repository).approve({ ticketId });
 	})
 	.patch("/:ticketId/deny", async ({ params }) => {
 		const ticketId = params.ticketId;
@@ -25,7 +25,7 @@ export const ticketBackOfficeRoutes = new Elysia({
 		try {
 			await transaction.openTransaction();
 
-			await new DenyTicketPaymentStatus(repository).deny({ ticketId });
+			await new DenyTicketPayment(repository).deny({ ticketId });
 			await transaction.commit();
 		} catch (error) {
 			await transaction.rollback();

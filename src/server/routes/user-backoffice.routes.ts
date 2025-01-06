@@ -1,7 +1,7 @@
 import { Elysia } from "elysia";
 
-import { TicketBackOfficeGetter } from "./../../modules/ticket-backoffice/application/TicketBackOfficeGetter";
-import { TicketBackOfficePostgresRepository } from "./../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
+import { TicketBackOfficeGetter } from "../../modules/ticket-backoffice/application/TicketBackOfficeGetter";
+import { TicketBackOfficePostgresRepository } from "../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
 
 const repository = new TicketBackOfficePostgresRepository();
 
