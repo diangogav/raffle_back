@@ -3,11 +3,11 @@ import { Payment } from "src/modules/payment/domain/Payment";
 import { TicketBackOffice } from "../domain/TicketBackOffice";
 import { TicketBackOfficeRepository } from "../domain/TicketBackOfficeRepository";
 
-import { dataSource } from "./../../../shared/database/infrastructure/postgres/data-source";
-import { PaymentEntity } from "./../../../shared/database/infrastructure/postgres/entities/PaymentEntity";
-import { TicketEntity } from "./../../../shared/database/infrastructure/postgres/entities/TicketEntity";
-import { PostgresTypeORMRepository } from "./../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
-import { PaymentFactory } from "./../../payment/domain/PaymentFactory";
+import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
+import { PaymentEntity } from "../../../shared/database/infrastructure/postgres/entities/PaymentEntity";
+import { TicketEntity } from "../../../shared/database/infrastructure/postgres/entities/TicketEntity";
+import { PostgresTypeORMRepository } from "../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
+import { PaymentFactory } from "../../payment/domain/PaymentFactory";
 
 export class TicketBackOfficePostgresRepository
 	extends PostgresTypeORMRepository

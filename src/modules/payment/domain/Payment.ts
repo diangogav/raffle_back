@@ -1,4 +1,4 @@
-import { ConflictError } from "../../../shared/errors/ConflictError";
+import { ConflictError } from "../../../shared/errors";
 
 import { PaymentStatus } from "./PaymentStatus";
 
@@ -35,7 +35,7 @@ export abstract class Payment {
 	public readonly deletedAt: Date | null;
 	private _status: PaymentStatus;
 
-	constructor(data: PaymentAttributes & PaymentDateAttributes) {
+	protected constructor(data: PaymentAttributes & PaymentDateAttributes) {
 		if (!data.reference) {
 			throw new ConflictError("Payment should have a reference.");
 		}
