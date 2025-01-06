@@ -54,8 +54,12 @@ export abstract class Payment {
 		this._status = data.status;
 	}
 
-	changeStatus(status: PaymentStatus): void {
-		this._status = status;
+	approve(): void {
+		this._status = PaymentStatus.APPROVED;
+	}
+
+	deny(): void {
+		this._status = PaymentStatus.DENIED;
 	}
 
 	get status(): PaymentStatus {

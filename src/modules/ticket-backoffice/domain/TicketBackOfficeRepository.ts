@@ -6,4 +6,5 @@ export interface TicketBackOfficeRepository {
 	get({ userId }: { userId: string }): Promise<TicketBackOffice[]>;
 	getTicketPayment({ ticketId }: { ticketId: string }): Promise<Payment | null>;
 	update(payment: Payment): Promise<void>;
+	deleteTicket({ ticketId }: { ticketId: string }): Promise<void>;
 }

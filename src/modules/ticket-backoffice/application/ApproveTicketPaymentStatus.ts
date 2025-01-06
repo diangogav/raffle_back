@@ -1,19 +1,18 @@
-import { PaymentStatus } from "src/modules/payment/domain/PaymentStatus";
 import { NotFoundError } from "src/shared/errors";
 
 import { TicketBackOfficeRepository } from "../domain/TicketBackOfficeRepository";
 
-export class UpdateTicketPaymentStatus {
+export class ApproveTicketPaymentStatus {
 	constructor(private readonly repository: TicketBackOfficeRepository) {}
 
-	async changeStatus({ ticketId, status }: { ticketId: string; status: PaymentStatus }): Promise<void> {
+	async approve({ ticketId }: { ticketId: string }): Promise<void> {
 		const payment = await this.repository.getTicketPayment({ ticketId });
 
 		if (!payment) {
 			throw new NotFoundError(`Payment for ticket ${ticketId} not found`);
 		}
 
-		payment.changeStatus(status);
+		payment.approve();
 
 		await this.repository.update(payment);
 	}

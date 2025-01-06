@@ -6,9 +6,13 @@ import { TicketBackOfficeRepository } from "../domain/TicketBackOfficeRepository
 import { dataSource } from "./../../../shared/database/infrastructure/postgres/data-source";
 import { PaymentEntity } from "./../../../shared/database/infrastructure/postgres/entities/PaymentEntity";
 import { TicketEntity } from "./../../../shared/database/infrastructure/postgres/entities/TicketEntity";
+import { PostgresTypeORMRepository } from "./../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
 import { PaymentFactory } from "./../../payment/domain/PaymentFactory";
 
-export class TicketBackOfficePostgresRepository implements TicketBackOfficeRepository {
+export class TicketBackOfficePostgresRepository
+	extends PostgresTypeORMRepository
+	implements TicketBackOfficeRepository
+{
 	async get({ userId }: { userId: string }): Promise<TicketBackOffice[]> {
 		const repository = dataSource.getRepository(TicketEntity);
 		const ticketsEntities = await repository.query(`
@@ -47,7 +51,7 @@ export class TicketBackOfficePostgresRepository implements TicketBackOfficeRepos
 	}
 
 	async update(payment: Payment): Promise<void> {
-		const repository = dataSource.getRepository(PaymentEntity);
+		const repository = this.getRepository(PaymentEntity);
 
 		const paymentEntity = repository.create({
 			id: payment.id,
@@ -107,5 +111,11 @@ export class TicketBackOfficePostgresRepository implements TicketBackOfficeRepos
 			createdAt: payment.payment_created_at,
 			updatedAt: payment.payment_updated_at,
 		});
+	}
+
+	async deleteTicket({ ticketId }: { ticketId: string }): Promise<void> {
+		const repository = this.getRepository(TicketEntity);
+
+		await repository.delete(ticketId);
 	}
 }
