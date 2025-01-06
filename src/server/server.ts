@@ -18,7 +18,18 @@ export class Server {
 	constructor(logger: Logger) {
 		this.app = new Elysia()
 			.use(cors())
-			.use(swagger())
+			.use(
+				swagger({
+					documentation: {
+						tags: [
+							{ name: "Users", description: "User endpoints" },
+							{ name: "Auth", description: "Authentication endpoints" },
+							{ name: "Raffles", description: "Raffles endpoints" },
+							{ name: "Back Office", description: "Back Office endpoints" },
+						],
+					},
+				}),
+			)
 			.onError(({ error, set }) => {
 				this.logger.error(error);
 

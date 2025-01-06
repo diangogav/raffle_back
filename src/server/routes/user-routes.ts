@@ -36,6 +36,9 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 					format: "email",
 				}),
 			}),
+			detail: {
+				tags: ["Auth"],
+			},
 		},
 	)
 	.post(
@@ -48,17 +51,28 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 				email: t.String(),
 				password: t.String(),
 			}),
+			detail: {
+				tags: ["Auth"],
+			},
 		},
 	)
 	.get("/", async () => {
 		return new UserBackOfficeGetter(userBackOfficeRepository).get();
 	})
 	.use(bearer())
-	.get("/profile", async ({ bearer }) => {
-		const token = jwt.decode(bearer as string) as { id: string };
+	.get(
+		"/profile",
+		async ({ bearer }) => {
+			const token = jwt.decode(bearer as string) as { id: string };
 
-		return new UserFinder(repository).find({ userId: token.id });
-	})
+			return new UserFinder(repository).find({ userId: token.id });
+		},
+		{
+			detail: {
+				tags: ["Users"],
+			},
+		},
+	)
 	.use(bearer())
 	.patch(
 		"/",
@@ -80,5 +94,8 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 				password: t.Optional(t.String({ minLength: 4 })),
 				newPassword: t.Optional(t.String({ minLength: 4 })),
 			}),
+			detail: {
+				tags: ["Users"],
+			},
 		},
 	);

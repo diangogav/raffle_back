@@ -21,7 +21,12 @@ const paymentRepository = new PaymentPostgresRepository();
 const exchangeRateRepository = new PyDollarExchangeRate();
 const jwt = new JWT(config.jwt);
 
-export const raffleRoutes = new Elysia({ prefix: "/raffles" })
+export const raffleRoutes = new Elysia({
+	prefix: "/raffles",
+	detail: {
+		tags: ["Raffles"],
+	},
+})
 	.get(
 		"/most-recent",
 		async ({ query }) => {

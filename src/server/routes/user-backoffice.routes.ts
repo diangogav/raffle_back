@@ -5,11 +5,13 @@ import { TicketBackOfficePostgresRepository } from "./../../modules/ticket-backo
 
 const repository = new TicketBackOfficePostgresRepository();
 
-export const userBackOfficeRoutes = new Elysia({ prefix: "/back-office/users" }).get(
-	"/:userId/tickets",
-	async ({ params }) => {
-		const userId = params.userId;
-
-		return new TicketBackOfficeGetter(repository).get({ userId });
+export const userBackOfficeRoutes = new Elysia({
+	prefix: "/back-office/users",
+	detail: {
+		tags: ["Back Office"],
 	},
-);
+}).get("/:userId/tickets", async ({ params }) => {
+	const userId = params.userId;
+
+	return new TicketBackOfficeGetter(repository).get({ userId });
+});
