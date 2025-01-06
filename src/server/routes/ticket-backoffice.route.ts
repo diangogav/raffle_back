@@ -7,17 +7,17 @@ import { TicketBackOfficePostgresRepository } from "./../../modules/ticket-backo
 const repository = new TicketBackOfficePostgresRepository();
 
 export const ticketBackOfficeRoutes = new Elysia({
-	prefix: "/back-office/tickets/",
+	prefix: "/back-office/tickets",
 	detail: {
 		tags: ["Back Office"],
 	},
 })
-	.patch(":ticketId/approve", async ({ params }) => {
+	.patch("/:ticketId/approve", async ({ params }) => {
 		const ticketId = params.ticketId;
 
 		return new UpdateTicketPaymentStatus(repository).changeStatus({ ticketId, status: PaymentStatus.APPROVED });
 	})
-	.patch(":ticketId/deny", async ({ params }) => {
+	.patch("/:ticketId/deny", async ({ params }) => {
 		const ticketId = params.ticketId;
 
 		return new UpdateTicketPaymentStatus(repository).changeStatus({ ticketId, status: PaymentStatus.DENIED });
