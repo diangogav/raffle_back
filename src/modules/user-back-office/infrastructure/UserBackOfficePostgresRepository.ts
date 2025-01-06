@@ -9,7 +9,8 @@ export class UserBackOfficePostgresRepository implements UserBackOfficeRepositor
 		const userEntities = await repository.query(`
       SELECT users.id, users.name, users.last_name, users.email, users.phone, COUNT(tickets.id) AS unverified_tickets_count from users
       JOIN tickets ON users.id = tickets.user_id
-      JOIN payments ON tickets.payment_id = payments.id where status = PENDING
+      JOIN payments ON tickets.payment_id = payments.id
+			WHERE payments.status = 'PENDING'
       GROUP BY users.id;
     `);
 
