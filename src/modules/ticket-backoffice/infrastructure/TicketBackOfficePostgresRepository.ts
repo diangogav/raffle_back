@@ -17,7 +17,7 @@ export class TicketBackOfficePostgresRepository implements TicketBackOfficeRepos
         tickets.ticket_number, 
         tickets.user_id, 
         tickets.created_at, 
-        payments.verified, 
+        payments.status, 
         payments.reference as payment_reference, 
         payments.id as payment_id, 
         raffles.id as raffle_id, 
@@ -26,7 +26,7 @@ export class TicketBackOfficePostgresRepository implements TicketBackOfficeRepos
       FROM tickets
       JOIN payments on tickets.payment_id = payments.id
       JOIN raffles on tickets.raffle_id = raffles.id
-      WHERE tickets.user_id = '${userId}';
+      WHERE tickets.user_id = '${userId}' AND payments.status = 'PENDING';
     `);
 
 		const tickets = ticketsEntities.map((ticket) =>
@@ -68,13 +68,13 @@ export class TicketBackOfficePostgresRepository implements TicketBackOfficeRepos
 	async getTicketPayment({ ticketId }: { ticketId: string }): Promise<Payment | null> {
 		const repository = dataSource.getRepository(TicketEntity);
 
-		const entity = repository.query(`
+		const entity = await repository.query(`
 			select 
 				payments.id as payment_id, 
 				payments.reference as payment_reference, 
 				payments.amount as payment_amount,
 				payments.name as payment_name,
-				payments.payment_method
+				payments.payment_method,
 				payments.dni as payment_dni,
 				payments.phone as payment_phone,
 				payments.email as payment_email,

@@ -8,6 +8,7 @@ import { Logger } from "../shared/logger/domain/Logger";
 
 import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
+import { ticketBackOfficeRoutes } from "./routes/ticket-backoffice.route";
 import { userBackOfficeRoutes } from "./routes/user-backoffice.routes";
 import { userRoutes } from "./routes/user-routes";
 
@@ -58,7 +59,7 @@ export class Server {
 			.use(healthCheckRoutes);
 		// @ts-expect-error linter not config correctly
 		this.app.group("/api/v1", (app: Elysia) => {
-			return app.use(raffleRoutes).use(userRoutes).use(userBackOfficeRoutes);
+			return app.use(raffleRoutes).use(userRoutes).use(userBackOfficeRoutes).use(ticketBackOfficeRoutes);
 		});
 		this.logger = logger;
 	}
