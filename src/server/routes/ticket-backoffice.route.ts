@@ -1,17 +1,24 @@
 import { Elysia } from "elysia";
-import { VerifyTicketPayment } from "src/modules/ticket-backoffice/application/VerifyTicketPayment";
+import { PaymentStatus } from "src/modules/payment/domain/PaymentStatus";
+import { UpdateTicketPaymentStatus } from "src/modules/ticket-backoffice/application/UpdateTicketPaymentStatus";
 
 import { TicketBackOfficePostgresRepository } from "./../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
 
 const repository = new TicketBackOfficePostgresRepository();
 
 export const ticketBackOfficeRoutes = new Elysia({
-	prefix: "/back-office/tickets",
+	prefix: "/back-office/tickets/",
 	detail: {
 		tags: ["Back Office"],
 	},
-}).get("/tickets/:ticketId", async ({ params }) => {
-	const ticketId = params.ticketId;
+})
+	.patch(":ticketId/approve", async ({ params }) => {
+		const ticketId = params.ticketId;
 
-	return new VerifyTicketPayment(repository).verify({ ticketId });
-});
+		return new UpdateTicketPaymentStatus(repository).changeStatus({ ticketId, status: PaymentStatus.APPROVED });
+	})
+	.patch(":ticketId/deny", async ({ params }) => {
+		const ticketId = params.ticketId;
+
+		return new UpdateTicketPaymentStatus(repository).changeStatus({ ticketId, status: PaymentStatus.DENIED });
+	});
