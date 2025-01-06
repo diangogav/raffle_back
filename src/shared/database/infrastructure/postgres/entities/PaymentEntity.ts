@@ -1,3 +1,4 @@
+import { PaymentStatus } from "src/modules/payment/domain/PaymentStatus";
 import {
 	Column,
 	CreateDateColumn,
@@ -44,8 +45,8 @@ export class PaymentEntity {
 	@Column({ type: "uuid", name: "user_id" })
 	userId: string;
 
-	@Column({ type: "boolean", name: "verified", default: false })
-	verified: boolean;
+	@Column({ type: "enum", enum: PaymentStatus, name: "status", default: PaymentStatus.PENDING })
+	status: PaymentStatus;
 
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;

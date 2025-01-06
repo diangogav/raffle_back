@@ -1,5 +1,7 @@
 import { ConflictError } from "../../../shared/errors/ConflictError";
 
+import { PaymentStatus } from "./PaymentStatus";
+
 export type PaymentAttributes = {
 	id: string;
 	reference: string;
@@ -10,7 +12,7 @@ export type PaymentAttributes = {
 	phone?: string | null;
 	email?: string | null;
 	userId: string;
-	verified: boolean;
+	status: PaymentStatus;
 };
 
 export type PaymentDateAttributes = {
@@ -31,7 +33,7 @@ export abstract class Payment {
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public readonly deletedAt: Date | null;
-	public readonly verified: boolean;
+	public readonly status: PaymentStatus;
 
 	constructor(data: PaymentAttributes & PaymentDateAttributes) {
 		if (!data.reference) {
@@ -49,6 +51,6 @@ export abstract class Payment {
 		this.userId = data.userId;
 		this.createdAt = data.createdAt;
 		this.updatedAt = data.updatedAt;
-		this.verified = data.verified;
+		this.status = data.status;
 	}
 }
