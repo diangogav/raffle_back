@@ -27,4 +27,8 @@ export class PagoMovilPayment extends Payment {
 			status: PaymentStatus.PENDING,
 		});
 	}
+
+	static from(data: PaymentAttributes & PaymentDateAttributes): PagoMovilPayment {
+		return new PagoMovilPayment(data);
+	}
 }

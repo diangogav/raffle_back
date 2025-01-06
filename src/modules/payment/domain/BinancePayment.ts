@@ -23,4 +23,8 @@ export class BinancePayment extends Payment {
 			status: PaymentStatus.PENDING,
 		});
 	}
+
+	static from(data: PaymentAttributes & PaymentDateAttributes): BinancePayment {
+		return new BinancePayment(data);
+	}
 }

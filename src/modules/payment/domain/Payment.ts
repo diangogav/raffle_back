@@ -33,7 +33,7 @@ export abstract class Payment {
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public readonly deletedAt: Date | null;
-	public readonly status: PaymentStatus;
+	private _status: PaymentStatus;
 
 	constructor(data: PaymentAttributes & PaymentDateAttributes) {
 		if (!data.reference) {
@@ -51,6 +51,14 @@ export abstract class Payment {
 		this.userId = data.userId;
 		this.createdAt = data.createdAt;
 		this.updatedAt = data.updatedAt;
-		this.status = data.status;
+		this._status = data.status;
+	}
+
+	approve(): void {
+		this._status = PaymentStatus.APPROVE;
+	}
+
+	get status(): PaymentStatus {
+		return this._status;
 	}
 }
