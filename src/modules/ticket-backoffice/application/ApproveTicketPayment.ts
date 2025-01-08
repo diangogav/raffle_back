@@ -3,7 +3,7 @@ import { ConflictError, NotFoundError } from "src/shared/errors";
 
 import { TicketBackOfficeRepository } from "../domain/TicketBackOfficeRepository";
 
-import { PaymentApproveTemplate } from "./../../../shared/email/domain/PaymentApproveTemplate";
+import { PaymentApprovedTemplate } from "../../../shared/email/domain/PaymentApprovedTemplate";
 import { UserRepository } from "./../../user/domain/UserRepository";
 
 export class ApproveTicketPayment {
@@ -31,7 +31,7 @@ export class ApproveTicketPayment {
 		}
 
 		await this.email.send({
-			template: new PaymentApproveTemplate(user.name),
+			template: new PaymentApprovedTemplate(user.name),
 			to: user.email,
 		});
 	}

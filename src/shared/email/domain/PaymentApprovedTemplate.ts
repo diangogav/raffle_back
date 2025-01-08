@@ -1,6 +1,6 @@
 import { Template } from "./Template";
 
-export class PaymentApproveTemplate extends Template {
+export class PaymentApprovedTemplate extends Template {
 	public readonly subject: string;
 
 	constructor(private readonly name: string) {
