@@ -46,7 +46,11 @@ export const ticketBackOfficeRoutes = new Elysia({
 		try {
 			await transaction.openTransaction();
 
-			await new DenyTicketPayment(repository).deny({ ticketId });
+			await new DenyTicketPayment(
+				repository,
+				new UserPostgresRepository(),
+				new ResendEmailSender(new Pino()),
+			).deny({ ticketId });
 			await transaction.commit();
 		} catch (error) {
 			await transaction.rollback();
