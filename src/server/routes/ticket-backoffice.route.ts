@@ -5,6 +5,10 @@ import { PostgresTypeORM } from "src/shared/database/infrastructure/postgres/Pos
 
 import { TicketBackOfficePostgresRepository } from "../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
 
+import { UserPostgresRepository } from "./../../modules/user/infrastructure/UserPostgresRepository";
+import { ResendEmailSender } from "./../../shared/email/infrastructure/ResendEmailSender";
+import { Pino } from "./../../shared/logger/infrastructure/Pino";
+
 const repository = new TicketBackOfficePostgresRepository();
 
 export const ticketBackOfficeRoutes = new Elysia({
@@ -15,8 +19,25 @@ export const ticketBackOfficeRoutes = new Elysia({
 })
 	.patch("/:ticketId/approve", async ({ params }) => {
 		const ticketId = params.ticketId;
+		const transaction = PostgresTypeORM.getInstance();
 
-		return new ApproveTicketPayment(repository).approve({ ticketId });
+		try {
+			await transaction.openTransaction();
+
+			await new ApproveTicketPayment(
+				repository,
+				new UserPostgresRepository(),
+				new ResendEmailSender(new Pino()),
+			).approve({
+				ticketId,
+			});
+			await transaction.commit();
+		} catch (error) {
+			await transaction.rollback();
+			throw error;
+		} finally {
+			await transaction.closeTransaction();
+		}
 	})
 	.patch("/:ticketId/deny", async ({ params }) => {
 		const ticketId = params.ticketId;
