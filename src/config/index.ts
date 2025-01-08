@@ -25,4 +25,8 @@ export const config = {
 	pyDollar: {
 		token: ensureEnvVariable(process.env.PY_DOLLAR_AUTH_TOKEN as string, "PY_DOLLAR_AUTH_TOKEN"),
 	},
+	email: {
+		resendApiKey: ensureEnvVariable(process.env.RESEND_API_KEY as string, "RESEND_API_KEY"),
+		from: ensureEnvVariable(process.env.EMAIL_FROM as string, "EMAIL_FROM"),
+	},
 };
