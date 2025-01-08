@@ -11,10 +11,13 @@ import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetai
 import { RafflesResumeGetter } from "../../modules/raffle/application/RafflesResumeGetter";
 import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
+import { UserPostgresRepository } from "../../modules/user/infrastructure/UserPostgresRepository";
+import { ResendEmailSender } from "../../shared/email/infrastructure/ResendEmailSender";
 import { JWT } from "../../shared/JWT";
+import { Pino } from "../../shared/logger/infrastructure/Pino";
 
-import { PostgresTypeORM } from "./../../shared/database/infrastructure/postgres/PostgresTypeORM";
-import { PyDollarExchangeRate } from "./../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
+import { PostgresTypeORM } from "../../shared/database/infrastructure/postgres/PostgresTypeORM";
+import { PyDollarExchangeRate } from "../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
 
 const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();
@@ -85,7 +88,13 @@ export const raffleRoutes = new Elysia({
 
 			try {
 				await transaction.openTransaction();
-				const buyTicket = new BuyTicket(repository, paymentRepository, exchangeRateRepository);
+				const buyTicket = new BuyTicket(
+					repository,
+					paymentRepository,
+					exchangeRateRepository,
+					new UserPostgresRepository(),
+					new ResendEmailSender(new Pino()),
+				);
 				await buyTicket.buy({
 					...body,
 					userId: token.id,

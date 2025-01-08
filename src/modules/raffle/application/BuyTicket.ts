@@ -1,11 +1,14 @@
+import { EmailSender } from "../../../shared/email/domain/EmailSender";
+import { PaymentInProcessTemplate } from "../../../shared/email/domain/PaymentInProcessTemplate";
 import { ConflictError } from "../../../shared/errors";
+import { ExchangeRateRepository } from "../../../shared/exchange-rate/domain/ExchangeRateRepository";
 import { PaymentFactory } from "../../payment/domain/PaymentFactory";
+import { PaymentMethod } from "../../payment/domain/PaymentMethod.enum";
 import { PaymentRepository } from "../../payment/domain/PaymentRepository";
+import { UserRepository } from "../../user/domain/UserRepository";
 import { Raffle } from "../domain/Raffle";
 import { RaffleRepository } from "../domain/RaffleRepository";
 
-import { ExchangeRateRepository } from "./../../../shared/exchange-rate/domain/ExchangeRateRepository";
-import { PaymentMethod } from "./../../payment/domain/PaymentMethod.enum";
 import { BuyTicketRequestDto } from "./dtos/BuyTicketRequestDto";
 
 export class BuyTicket {
@@ -13,6 +16,8 @@ export class BuyTicket {
 		private readonly repository: RaffleRepository,
 		private readonly paymentRepository: PaymentRepository,
 		private readonly exchangeRateRepository: ExchangeRateRepository,
+		private readonly userRepository: UserRepository,
+		private readonly email: EmailSender,
 	) {}
 
 	async buy(data: BuyTicketRequestDto): Promise<void> {
@@ -50,6 +55,16 @@ export class BuyTicket {
 		await Promise.allSettled(tickets.map((ticket) => this.repository.saveTicket(ticket)));
 
 		await this.repository.save(raffle);
+
+		const user = await this.userRepository.findById(data.userId);
+		if (!user) {
+			throw new ConflictError(`User not found`);
+		}
+
+		await this.email.send({
+			template: new PaymentInProcessTemplate(user.name),
+			to: user.email,
+		});
 	}
 
 	private async ensurePaymentAmountIsValid({
