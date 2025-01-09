@@ -18,6 +18,8 @@ import { Pino } from "../../shared/logger/infrastructure/Pino";
 
 import { PostgresTypeORM } from "../../shared/database/infrastructure/postgres/PostgresTypeORM";
 import { PyDollarExchangeRate } from "../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
+import { container } from "../../shared/dependency-injection";
+import { EventBus } from "../../shared/event-bus/domain/EventBus";
 
 const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();
@@ -92,8 +94,7 @@ export const raffleRoutes = new Elysia({
 					repository,
 					paymentRepository,
 					exchangeRateRepository,
-					new UserPostgresRepository(),
-					new ResendEmailSender(new Pino()),
+					container.get(EventBus),
 				);
 				await buyTicket.buy({
 					...body,

@@ -18,6 +18,7 @@ import { raffleRoutes } from "./routes/raffle-routes";
 import { ticketBackOfficeRoutes } from "./routes/ticket-backoffice.route";
 import { userBackOfficeRoutes } from "./routes/user-backoffice.routes";
 import { userRoutes } from "./routes/user-routes";
+import { SendEmailWhenTicketsPurchased } from "../modules/ticket-backoffice/application/SendEmailWhenTicketsPurchased";
 
 export class Server {
 	private readonly app: Elysia;
@@ -93,6 +94,14 @@ export class Server {
 		eventBus.subscribe(
 			SendEmailWhenTicketPaymentDenied.ListenTo,
 			new SendEmailWhenTicketPaymentDenied(
+				this.logger,
+				new UserFinderDomainService(new UserPostgresRepository()),
+				container.get(EmailSender),
+			),
+		);
+		eventBus.subscribe(
+			SendEmailWhenTicketsPurchased.ListenTo,
+			new SendEmailWhenTicketsPurchased(
 				this.logger,
 				new UserFinderDomainService(new UserPostgresRepository()),
 				container.get(EmailSender),
