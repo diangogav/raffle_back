@@ -4,11 +4,8 @@ import { DenyTicketPayment } from "src/modules/ticket-backoffice/application/Den
 import { PostgresTypeORM } from "src/shared/database/infrastructure/postgres/PostgresTypeORM";
 
 import { TicketBackOfficePostgresRepository } from "../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
-import { UserPostgresRepository } from "../../modules/user/infrastructure/UserPostgresRepository";
 import { container } from "../../shared/dependency-injection";
-import { ResendEmailSender } from "../../shared/email/infrastructure/ResendEmailSender";
 import { EventBus } from "../../shared/event-bus/domain/EventBus";
-import { Pino } from "../../shared/logger/infrastructure/Pino";
 
 const repository = new TicketBackOfficePostgresRepository();
 
@@ -43,11 +40,7 @@ export const ticketBackOfficeRoutes = new Elysia({
 		try {
 			await transaction.openTransaction();
 
-			await new DenyTicketPayment(
-				repository,
-				new UserPostgresRepository(),
-				new ResendEmailSender(new Pino()),
-			).deny({ ticketId });
+			await new DenyTicketPayment(repository, container.get(EventBus)).deny({ ticketId });
 			await transaction.commit();
 		} catch (error) {
 			await transaction.rollback();

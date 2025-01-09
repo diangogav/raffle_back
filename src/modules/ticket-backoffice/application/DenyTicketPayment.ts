@@ -1,16 +1,12 @@
-import { UserRepository } from "src/modules/user/domain/UserRepository";
-import { EmailSender } from "src/shared/email/domain/EmailSender";
-
-import { ConflictError, NotFoundError } from "../../../shared/errors";
+import { NotFoundError } from "../../../shared/errors";
+import { EventBus } from "../../../shared/event-bus/domain/EventBus";
 import { TicketBackOfficeRepository } from "../domain/TicketBackOfficeRepository";
-
-import { PaymentDeniedTemplate } from "./../../../shared/email/domain/PaymentDeniedTemplate";
+import { TicketPaymentDeniedDomainEvent } from "../domain/TicketPaymentDeniedDomainEvent";
 
 export class DenyTicketPayment {
 	constructor(
 		private readonly repository: TicketBackOfficeRepository,
-		private readonly userRepository: UserRepository,
-		private readonly email: EmailSender,
+		private readonly eventBus: EventBus,
 	) {}
 
 	async deny({ ticketId }: { ticketId: string }): Promise<void> {
@@ -25,15 +21,12 @@ export class DenyTicketPayment {
 		await this.repository.update(payment);
 		await this.repository.deleteTicket({ ticketId });
 
-		const user = await this.userRepository.findById(payment.userId);
-
-		if (!user) {
-			throw new ConflictError(`User for payment in ticket ${ticketId} not found`);
-		}
-
-		await this.email.send({
-			template: new PaymentDeniedTemplate(user.name),
-			to: user.email,
-		});
+		this.eventBus.publish(
+			TicketPaymentDeniedDomainEvent.DOMAIN_EVENT,
+			new TicketPaymentDeniedDomainEvent({
+				ticketId,
+				userId: payment.userId,
+			}),
+		);
 	}
 }
