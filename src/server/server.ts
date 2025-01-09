@@ -3,6 +3,7 @@ import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
 import { SendEmailWhenTicketPaymentApproved } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentApproved";
+import { SendEmailWhenTicketPaymentDenied } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentDenied";
 import { UserPostgresRepository } from "../modules/user/infrastructure/UserPostgresRepository";
 import { container } from "../shared/dependency-injection";
 import { EmailSender } from "../shared/email/domain/EmailSender";
@@ -84,6 +85,14 @@ export class Server {
 		eventBus.subscribe(
 			SendEmailWhenTicketPaymentApproved.ListenTo,
 			new SendEmailWhenTicketPaymentApproved(
+				this.logger,
+				new UserFinderDomainService(new UserPostgresRepository()),
+				container.get(EmailSender),
+			),
+		);
+		eventBus.subscribe(
+			SendEmailWhenTicketPaymentDenied.ListenTo,
+			new SendEmailWhenTicketPaymentDenied(
 				this.logger,
 				new UserFinderDomainService(new UserPostgresRepository()),
 				container.get(EmailSender),
