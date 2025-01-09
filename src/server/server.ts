@@ -2,9 +2,15 @@ import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
+import { SendEmailWhenTicketPaymentApproved } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentApproved";
+import { UserPostgresRepository } from "../modules/user/infrastructure/UserPostgresRepository";
+import { container } from "../shared/dependency-injection";
+import { EmailSender } from "../shared/email/domain/EmailSender";
 import { AuthenticationError, ConflictError, InvalidArgumentError, NotFoundError } from "../shared/errors";
 import { UnauthorizedError } from "../shared/errors/UnauthorizedError";
+import { EventBus } from "../shared/event-bus/domain/EventBus";
 import { Logger } from "../shared/logger/domain/Logger";
+import { UserFinderDomainService } from "../shared/user/domain/UserFinderDomainService";
 
 import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
@@ -17,6 +23,9 @@ export class Server {
 	private readonly logger: Logger;
 
 	constructor(logger: Logger) {
+		this.logger = logger;
+		this.registerSubscribers();
+
 		this.app = new Elysia()
 			.use(cors())
 			.use(
@@ -61,12 +70,24 @@ export class Server {
 		this.app.group("/api/v1", (app: Elysia) => {
 			return app.use(raffleRoutes).use(userRoutes).use(userBackOfficeRoutes).use(ticketBackOfficeRoutes);
 		});
-		this.logger = logger;
 	}
 
 	start(): void {
 		this.app.listen(process.env.PORT ?? 3000, () =>
 			this.logger.info(`Server started on port ${process.env.PORT ?? 3000}`),
+		);
+	}
+
+	private registerSubscribers(): void {
+		const eventBus = container.get(EventBus);
+
+		eventBus.subscribe(
+			SendEmailWhenTicketPaymentApproved.ListenTo,
+			new SendEmailWhenTicketPaymentApproved(
+				this.logger,
+				new UserFinderDomainService(new UserPostgresRepository()),
+				container.get(EmailSender),
+			),
 		);
 	}
 }

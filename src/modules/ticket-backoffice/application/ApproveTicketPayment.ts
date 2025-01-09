@@ -1,16 +1,13 @@
-import { EmailSender } from "src/shared/email/domain/EmailSender";
-import { ConflictError, NotFoundError } from "src/shared/errors";
+import { NotFoundError } from "src/shared/errors";
 
+import { EventBus } from "../../../shared/event-bus/domain/EventBus";
 import { TicketBackOfficeRepository } from "../domain/TicketBackOfficeRepository";
-
-import { PaymentApprovedTemplate } from "../../../shared/email/domain/PaymentApprovedTemplate";
-import { UserRepository } from "./../../user/domain/UserRepository";
+import { TicketPaymentApprovedDomainEvent } from "../domain/TicketPaymentApprovedDomainEvent";
 
 export class ApproveTicketPayment {
 	constructor(
 		private readonly repository: TicketBackOfficeRepository,
-		private readonly userRepository: UserRepository,
-		private readonly email: EmailSender,
+		private readonly eventBus: EventBus,
 	) {}
 
 	async approve({ ticketId }: { ticketId: string }): Promise<void> {
@@ -24,15 +21,9 @@ export class ApproveTicketPayment {
 
 		await this.repository.update(payment);
 
-		const user = await this.userRepository.findById(payment.userId);
-
-		if (!user) {
-			throw new ConflictError(`User for payment in ticket ${ticketId} not found`);
-		}
-
-		await this.email.send({
-			template: new PaymentApprovedTemplate(user.name),
-			to: user.email,
-		});
+		this.eventBus.publish(
+			TicketPaymentApprovedDomainEvent.DOMAIN_EVENT,
+			new TicketPaymentApprovedDomainEvent({ ticketId, userId: payment.userId }),
+		);
 	}
 }

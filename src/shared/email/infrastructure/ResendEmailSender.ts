@@ -1,11 +1,12 @@
+import { Service } from "diod";
 import { Resend } from "resend";
 
+import { config } from "../../../config";
+import { Logger } from "../../logger/domain/Logger";
 import { EmailSender } from "../domain/EmailSender";
 import { Template } from "../domain/Template";
 
-import { config } from "./../../../config/index";
-import { Logger } from "./../../logger/domain/Logger";
-
+@Service()
 export class ResendEmailSender implements EmailSender {
 	private readonly resend: Resend;
 
