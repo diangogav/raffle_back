@@ -1,7 +1,7 @@
+import { Service } from "diod";
 import pino from "pino";
 
 import { Logger } from "../domain/Logger";
-import { Service } from "diod";
 
 @Service()
 export class Pino implements Logger {

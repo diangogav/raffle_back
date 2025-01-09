@@ -11,15 +11,11 @@ import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetai
 import { RafflesResumeGetter } from "../../modules/raffle/application/RafflesResumeGetter";
 import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
-import { UserPostgresRepository } from "../../modules/user/infrastructure/UserPostgresRepository";
-import { ResendEmailSender } from "../../shared/email/infrastructure/ResendEmailSender";
-import { JWT } from "../../shared/JWT";
-import { Pino } from "../../shared/logger/infrastructure/Pino";
-
 import { PostgresTypeORM } from "../../shared/database/infrastructure/postgres/PostgresTypeORM";
-import { PyDollarExchangeRate } from "../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
 import { container } from "../../shared/dependency-injection";
 import { EventBus } from "../../shared/event-bus/domain/EventBus";
+import { PyDollarExchangeRate } from "../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
+import { JWT } from "../../shared/JWT";
 
 const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();

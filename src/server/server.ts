@@ -4,6 +4,7 @@ import { Elysia } from "elysia";
 
 import { SendEmailWhenTicketPaymentApproved } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentApproved";
 import { SendEmailWhenTicketPaymentDenied } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentDenied";
+import { SendEmailWhenTicketsPurchased } from "../modules/ticket-backoffice/application/SendEmailWhenTicketsPurchased";
 import { UserPostgresRepository } from "../modules/user/infrastructure/UserPostgresRepository";
 import { container } from "../shared/dependency-injection";
 import { EmailSender } from "../shared/email/domain/EmailSender";
@@ -18,7 +19,6 @@ import { raffleRoutes } from "./routes/raffle-routes";
 import { ticketBackOfficeRoutes } from "./routes/ticket-backoffice.route";
 import { userBackOfficeRoutes } from "./routes/user-backoffice.routes";
 import { userRoutes } from "./routes/user-routes";
-import { SendEmailWhenTicketsPurchased } from "../modules/ticket-backoffice/application/SendEmailWhenTicketsPurchased";
 
 export class Server {
 	private readonly app: Elysia;
