@@ -80,6 +80,18 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 		return tickets.map((ticket) => Ticket.from(ticket));
 	}
 
+	async getTicketsByPaymentId(paymentId: string): Promise<Ticket[]> {
+		const repository = dataSource.getRepository(TicketEntity);
+
+		const tickets = await repository.find({
+			where: {
+				paymentId,
+			},
+		});
+
+		return tickets.map((ticket) => Ticket.from(ticket));
+	}
+
 	async findById(raffleId: string): Promise<Raffle | null> {
 		const repository = dataSource.getRepository(RaffleEntity);
 		const raffleEntity = await repository.findOne({ where: { id: raffleId } });

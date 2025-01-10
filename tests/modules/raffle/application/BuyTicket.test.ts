@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import { mock, MockProxy } from "jest-mock-extended";
 import { PaymentRepository } from "src/modules/payment/domain/PaymentRepository";
+import { EventBus } from "src/shared/event-bus/domain/EventBus";
 
 import { PaymentMethod } from "../../../../src/modules/payment/domain/PaymentMethod.enum";
 import { BuyTicket } from "../../../../src/modules/raffle/application/BuyTicket";
@@ -24,6 +25,7 @@ describe("BuyTicket", () => {
 	let repository: MockProxy<RaffleRepository>;
 	let paymentRepository: MockProxy<PaymentRepository>;
 	let exchangeRateRepository: MockProxy<ExchangeRateRepository>;
+	let eventBus: MockProxy<EventBus>;
 	let request: BuyTicketRequestDto;
 	let raffle: Raffle;
 	let ticket: Ticket;
@@ -33,7 +35,8 @@ describe("BuyTicket", () => {
 		repository = mock();
 		paymentRepository = mock();
 		exchangeRateRepository = mock();
-		useCase = new BuyTicket(repository, paymentRepository, exchangeRateRepository);
+		eventBus = mock();
+		useCase = new BuyTicket(repository, paymentRepository, exchangeRateRepository, eventBus);
 		ticket = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "6" });
 		raffle = RaffleMother.create({ id: request.raffleId, status: RaffleStatus.ONGOING, tickets: [ticket] });
 		repository.findById.mockResolvedValue(raffle);
@@ -51,6 +54,7 @@ describe("BuyTicket", () => {
 			expect(repository.saveTicket).toHaveBeenCalledTimes(1);
 			expect(raffle.ticketsPurchased).toEqual([6, 20]);
 			expect(paymentRepository.save).toHaveBeenCalledTimes(1);
+			expect(eventBus.publish).toBeCalledTimes(1);
 		});
 
 		it("Should throw and error if ticket is already taken", async () => {

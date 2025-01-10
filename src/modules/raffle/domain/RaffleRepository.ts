@@ -17,6 +17,7 @@ export interface RaffleRepository {
 		page: number;
 	}): Promise<Raffle[]>;
 	getTickets(raffleId: string): Promise<Ticket[]>;
+	getTicketsByPaymentId(paymentId: string): Promise<Ticket[]>;
 	findById(raffleId: string): Promise<Raffle | null>;
 	saveTicket(ticket: Ticket): Promise<void>;
 	rafflesWithTickets(userId: string, statuses: RaffleStatus[]): Promise<Raffle[]>;

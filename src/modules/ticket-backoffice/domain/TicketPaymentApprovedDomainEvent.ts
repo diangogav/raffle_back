@@ -1,5 +1,5 @@
 export type TicketPaymentApprovedPayload = {
-	ticketId: string;
+	paymentId: string;
 	userId: string;
 };
 

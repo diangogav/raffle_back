@@ -14,6 +14,7 @@ import { EventBus } from "../shared/event-bus/domain/EventBus";
 import { Logger } from "../shared/logger/domain/Logger";
 import { UserFinderDomainService } from "../shared/user/domain/UserFinderDomainService";
 
+import { RafflePostgresRepository } from "./../modules/raffle/infrastructure/RafflePostgresRepository";
 import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
 import { ticketBackOfficeRoutes } from "./routes/ticket-backoffice.route";
@@ -88,6 +89,7 @@ export class Server {
 			new SendEmailWhenTicketPaymentApproved(
 				this.logger,
 				new UserFinderDomainService(new UserPostgresRepository()),
+				new RafflePostgresRepository(),
 				container.get(EmailSender),
 			),
 		);

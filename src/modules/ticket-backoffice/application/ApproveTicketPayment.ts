@@ -23,7 +23,7 @@ export class ApproveTicketPayment {
 
 		this.eventBus.publish(
 			TicketPaymentApprovedDomainEvent.DOMAIN_EVENT,
-			new TicketPaymentApprovedDomainEvent({ ticketId, userId: payment.userId }),
+			new TicketPaymentApprovedDomainEvent({ paymentId: payment.id, userId: payment.userId }),
 		);
 	}
 }
