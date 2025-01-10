@@ -1,8 +1,7 @@
 import { PaymentEntity } from "../../../shared/database/infrastructure/postgres/entities/PaymentEntity";
+import { PostgresTypeORMRepository } from "../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
 import { Payment } from "../domain/Payment";
 import { PaymentRepository } from "../domain/PaymentRepository";
-
-import { PostgresTypeORMRepository } from "./../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
 
 export class PaymentPostgresRepository extends PostgresTypeORMRepository implements PaymentRepository {
 	async save(payment: Payment): Promise<void> {

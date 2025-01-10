@@ -1,7 +1,6 @@
 import { NotFoundError } from "../../../shared/errors";
+import { ExchangeRateRepository } from "../../../shared/exchange-rate/domain/ExchangeRateRepository";
 import { RaffleRepository } from "../domain/RaffleRepository";
-
-import { ExchangeRateRepository } from "./../../../shared/exchange-rate/domain/ExchangeRateRepository";
 
 export class RaffleDetailFinder {
 	constructor(

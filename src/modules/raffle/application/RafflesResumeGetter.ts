@@ -1,7 +1,6 @@
+import { ExchangeRateRepository } from "../../../shared/exchange-rate/domain/ExchangeRateRepository";
 import { RaffleRepository } from "../domain/RaffleRepository";
 import { RaffleStatus } from "../domain/RaffleStatus.enum";
-
-import { ExchangeRateRepository } from "./../../../shared/exchange-rate/domain/ExchangeRateRepository";
 
 export class RafflesResumeGetter {
 	constructor(
