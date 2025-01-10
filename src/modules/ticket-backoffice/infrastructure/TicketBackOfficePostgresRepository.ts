@@ -14,23 +14,26 @@ export class TicketBackOfficePostgresRepository
 {
 	async get({ userId }: { userId: string }): Promise<TicketBackOffice[]> {
 		const repository = dataSource.getRepository(TicketEntity);
-		const ticketsEntities = await repository.query(`
-      SELECT 
-        tickets.id, 
-        tickets.ticket_number, 
-        tickets.user_id, 
-        tickets.created_at, 
-        payments.status, 
-        payments.reference as payment_reference, 
-        payments.id as payment_id, 
-        raffles.id as raffle_id, 
-        raffles.title as raffle_title, 
-        raffles.end_date as raffle_end_date
-      FROM tickets
-      JOIN payments on tickets.payment_id = payments.id
-      JOIN raffles on tickets.raffle_id = raffles.id
-      WHERE tickets.user_id = '${userId}' AND payments.status = 'PENDING';
-    `);
+		const ticketsEntities = await repository.query(
+			`
+                SELECT
+                    tickets.id,
+                    tickets.ticket_number,
+                    tickets.user_id,
+                    tickets.created_at,
+                    payments.status,
+                    payments.reference as payment_reference,
+                    payments.id as payment_id,
+                    raffles.id as raffle_id,
+                    raffles.title as raffle_title,
+                    raffles.end_date as raffle_end_date
+                FROM tickets
+                         JOIN payments on tickets.payment_id = payments.id
+                         JOIN raffles on tickets.raffle_id = raffles.id
+                WHERE tickets.user_id = $1 AND payments.status = 'PENDING';
+			`,
+			[userId],
+		);
 
 		const tickets = ticketsEntities.map((ticket) =>
 			TicketBackOffice.from({
@@ -71,7 +74,8 @@ export class TicketBackOfficePostgresRepository
 	async getTicketPayment({ ticketId }: { ticketId: string }): Promise<Payment | null> {
 		const repository = dataSource.getRepository(TicketEntity);
 
-		const entity = await repository.query(`
+		const entity = await repository.query(
+			`
 			select 
 				payments.id as payment_id, 
 				payments.reference as payment_reference, 
@@ -87,8 +91,10 @@ export class TicketBackOfficePostgresRepository
 				payments.updated_at as payment_updated_at
 			from tickets
 			join payments on payments.id = tickets.payment_id
-			where tickets.id = '${ticketId}';
-		`);
+			where tickets.id = $1;
+		`,
+			[ticketId],
+		);
 
 		const payment = entity[0];
 

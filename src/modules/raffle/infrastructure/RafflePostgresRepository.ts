@@ -1,12 +1,11 @@
 import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
 import { RaffleEntity } from "../../../shared/database/infrastructure/postgres/entities/RaffleEntity";
 import { TicketEntity } from "../../../shared/database/infrastructure/postgres/entities/TicketEntity";
+import { PostgresTypeORMRepository } from "../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
 import { Raffle } from "../domain/Raffle";
 import { RaffleRepository } from "../domain/RaffleRepository";
 import { RaffleStatus } from "../domain/RaffleStatus.enum";
 import { Ticket } from "../tickets/domain/Ticket";
-
-import { PostgresTypeORMRepository } from "./../../../shared/database/infrastructure/postgres/PostgresTypeORMRepository";
 
 export class RafflePostgresRepository extends PostgresTypeORMRepository implements RaffleRepository {
 	async save(raffle: Raffle): Promise<void> {
@@ -120,52 +119,53 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 	async rafflesWithTickets(userId: string, statuses: RaffleStatus[]): Promise<Raffle[]> {
 		const repository = dataSource.getRepository(RaffleEntity);
 
-		const formattedStatuses = statuses.map((status) => `'${status}'`).join(", ");
-
-		const raffles = await repository.query(`
-			SELECT 
-				r.id AS raffle_id,
-				r.title,
-				r.description,
-				r.ticket_price,
-				r.end_date,
-				r.total_tickets,
-				r.user_id AS raffle_user_id,
-				r.cover,
-				r.status,
-				r.created_at AS raffle_created_at,
-				r.updated_at AS raffle_updated_at,
-				r.deleted_at AS raffle_deleted_at,
-				COALESCE(
-						json_agg(
-								jsonb_build_object(
-										'id', t.id,
-										'ticket_number', t.ticket_number,
-										'user_id', t.user_id,
-										'payment_id', t.payment_id,
-										'payment_status', p.status,
-										'created_at', t.created_at,
-										'updated_at', t.updated_at,
-										'deleted_at', t.deleted_at
-								)
-						) FILTER (WHERE t.id IS NOT NULL AND p.status != 'DENIED'), 
-						'[]'
-				) AS tickets
-			FROM 
-					raffles r
-			LEFT JOIN 
-					tickets t ON r.id = t.raffle_id
-			LEFT JOIN 
-					payments p ON t.payment_id = p.id
-			WHERE 
-					t.user_id = '${userId}'
-					AND r.status IN (${formattedStatuses})
-			GROUP BY 
-					r.id
-			ORDER BY 
-					r.end_date DESC
-			LIMIT 100;
-		`);
+		const raffles = await repository.query(
+			`
+            SELECT
+                r.id AS raffle_id,
+                r.title,
+                r.description,
+                r.ticket_price,
+                r.end_date,
+                r.total_tickets,
+                r.user_id AS raffle_user_id,
+                r.cover,
+                r.status,
+                r.created_at AS raffle_created_at,
+                r.updated_at AS raffle_updated_at,
+                r.deleted_at AS raffle_deleted_at,
+                COALESCE(
+                        json_agg(
+                                jsonb_build_object(
+                                        'id', t.id,
+                                        'ticket_number', t.ticket_number,
+                                        'user_id', t.user_id,
+                                        'payment_id', t.payment_id,
+                                        'payment_status', p.status,
+                                        'created_at', t.created_at,
+                                        'updated_at', t.updated_at,
+                                        'deleted_at', t.deleted_at
+                                )
+                        ) FILTER (WHERE t.id IS NOT NULL AND p.status != 'DENIED'),
+                        '[]'
+                ) AS tickets
+            FROM
+                raffles r
+                    LEFT JOIN
+                tickets t ON r.id = t.raffle_id
+                    LEFT JOIN
+                payments p ON t.payment_id = p.id
+            WHERE
+                t.user_id = $1
+              AND r.status = ANY($2)
+            GROUP BY
+                r.id
+            ORDER BY
+                r.end_date DESC
+                LIMIT 100;
+		`,
+			[userId, statuses],
+		);
 
 		return raffles.map((raffle) =>
 			Raffle.from({
