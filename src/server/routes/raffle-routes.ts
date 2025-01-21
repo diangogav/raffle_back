@@ -9,6 +9,7 @@ import { BuyTicket } from "../../modules/raffle/application/BuyTicket";
 import { OngoingRafflesGetter } from "../../modules/raffle/application/OngoingRafflesGetter";
 import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetailFinder";
 import { RafflesResumeGetter } from "../../modules/raffle/application/RafflesResumeGetter";
+import { RaffleWinnersGetter } from "../../modules/raffle/application/RaffleWinnersGetter";
 import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
 import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/RafflePostgresRepository";
 import { PostgresTypeORM } from "../../shared/database/infrastructure/postgres/PostgresTypeORM";
@@ -152,4 +153,20 @@ export const raffleRoutes = new Elysia({
 				RaffleStatus.FINISHED,
 			],
 		});
-	});
+	})
+	.use(bearer())
+	.get(
+		":raffleId/winners",
+		async ({ params, bearer }) => {
+			jwt.decode(bearer as string) as { id: string };
+
+			const raffleId = params.raffleId;
+
+			return new RaffleWinnersGetter(repository).get({ raffleId });
+		},
+		{
+			params: t.Object({
+				raffleId: t.String(),
+			}),
+		},
+	);

@@ -1,3 +1,5 @@
+import { In } from "typeorm";
+
 import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
 import { RaffleEntity } from "../../../shared/database/infrastructure/postgres/entities/RaffleEntity";
 import { TicketEntity } from "../../../shared/database/infrastructure/postgres/entities/TicketEntity";
@@ -243,5 +245,15 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 				tickets: raffle.tickets,
 			}),
 		);
+	}
+
+	async getTicketsByIds(ticketsIds: string[]): Promise<Ticket[]> {
+		const repository = dataSource.getRepository(TicketEntity);
+
+		const response = await repository.find({
+			where: { id: In(ticketsIds) },
+		});
+
+		return response.map((ticketEntity) => Ticket.from({ ...ticketEntity }));
 	}
 }

@@ -27,4 +27,5 @@ export interface RaffleRepository {
 		limit: number,
 		page: number,
 	): Promise<Raffle[]>;
+	getTicketsByIds(ticketsIds: string[]): Promise<Ticket[]>;
 }
