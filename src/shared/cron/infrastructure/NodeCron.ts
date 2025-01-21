@@ -12,6 +12,7 @@ export class NodeCron extends Cron {
 			try {
 				await transaction.openTransaction();
 				await task.execute();
+				await transaction.commit();
 			} catch (error) {
 				await transaction.rollback();
 				throw error;

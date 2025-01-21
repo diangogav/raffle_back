@@ -49,7 +49,7 @@ describe("Raffle", () => {
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		});
-		expect(() => raffle.selectWinner()).toThrow(
+		expect(() => raffle.draw()).toThrow(
 			new Error(`Raffle with id ${raffle.id} is not closed. Only closed raffles can have a winner.`),
 		);
 	});
@@ -62,7 +62,7 @@ describe("Raffle", () => {
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		});
-		expect(() => raffle.selectWinner()).toThrow(new Error(`No tickets sold for this raffle.`));
+		expect(() => raffle.draw()).toThrow(new Error(`No tickets sold for this raffle.`));
 	});
 
 	it("Should select winner correctly", () => {
@@ -72,7 +72,7 @@ describe("Raffle", () => {
 			createdAt: new Date(),
 			updatedAt: new Date(),
 		});
-		const winnerTicket = raffle.selectWinner();
+		const winnerTicket = raffle.draw();
 
 		expect(winnerTicket).toEqual(params.tickets[0]);
 	});

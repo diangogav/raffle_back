@@ -21,12 +21,15 @@ export class DrawClosedRaffles implements Schedulable {
 			);
 
 			for (const raffle of raffles) {
-				const winnerTicket = raffle.selectWinner();
+				const winnerTicket = raffle.draw();
 				this.logger.info(`
 					winner ticket for raffle: ${raffle.id} : ${raffle.title} is
-					ticket with number ${winnerTicket?.ticketNumber} with
-					userId: ${winnerTicket?.userId}
+					ticket with number ${winnerTicket.ticketNumber} with
+					userId: ${winnerTicket.userId}
 				`);
+
+				// eslint-disable-next-line no-await-in-loop
+				await this.repository.save(raffle);
 			}
 		} catch (error) {
 			this.logger.error(`Error error drawing the raffles`);

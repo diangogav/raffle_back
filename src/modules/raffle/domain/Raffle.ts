@@ -19,6 +19,7 @@ export type RaffleAttributes = {
 	cover: string;
 	status: RaffleStatus;
 	tickets: Ticket[];
+	winningTickets: string[];
 };
 
 export type RaffleDateAttributes = {
@@ -41,6 +42,7 @@ export class Raffle {
 	public readonly cover: string;
 	private _status: RaffleStatus;
 	private readonly tickets: Ticket[];
+	private _winningTickets: string[];
 
 	private constructor(data: RaffleAttributes & RaffleDateAttributes) {
 		this.id = data.id;
@@ -55,13 +57,21 @@ export class Raffle {
 		this.cover = data.cover;
 		this._status = data.status;
 		this.tickets = data.tickets;
+		this._winningTickets = data.winningTickets;
 	}
 
-	static create(data: Omit<RaffleAttributes, "status" | "tickets">): Raffle {
+	static create(data: Omit<RaffleAttributes, "status" | "tickets" | "winningTickets">): Raffle {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 
-		return new Raffle({ ...data, status: RaffleStatus.PENDING, createdAt, updatedAt, tickets: [] });
+		return new Raffle({
+			...data,
+			status: RaffleStatus.PENDING,
+			createdAt,
+			updatedAt,
+			tickets: [],
+			winningTickets: [],
+		});
 	}
 
 	static from(data: RaffleAttributes & RaffleDateAttributes): Raffle {
@@ -97,6 +107,7 @@ export class Raffle {
 			status: this._status,
 			tickets: this.tickets,
 			ticketPriceBCV: this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2),
+			winningTickets: this._winningTickets,
 		};
 	}
 
@@ -115,10 +126,11 @@ export class Raffle {
 			status: this._status,
 			tickets: this.tickets,
 			ticketPriceBCV: this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2),
+			winningTickets: this._winningTickets,
 		};
 	}
 
-	selectWinner(): Ticket | null {
+	draw(): Ticket {
 		if (this._status !== RaffleStatus.CLOSED) {
 			throw new Error(`Raffle with id ${this.id} is not closed. Only closed raffles can have a winner.`);
 		}
@@ -128,8 +140,11 @@ export class Raffle {
 		}
 
 		const randomIndex = Math.floor(Math.random() * this.tickets.length);
+		const winningTicket = this.tickets[randomIndex];
+		this._winningTickets = [winningTicket.id];
+		this._status = RaffleStatus.DRAWN;
 
-		return this.tickets[randomIndex];
+		return winningTicket;
 	}
 
 	private generateTicket(
@@ -177,5 +192,9 @@ export class Raffle {
 
 	get status(): RaffleStatus {
 		return this._status;
+	}
+
+	get winningTickets(): string[] {
+		return this._winningTickets;
 	}
 }

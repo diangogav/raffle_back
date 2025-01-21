@@ -21,6 +21,7 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 			userId: raffle.userId,
 			cover: raffle.cover,
 			status: raffle.status,
+			winningTickets: raffle.winningTickets,
 		});
 		await repository.save(raffleEntity);
 	}
@@ -63,6 +64,7 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 				updatedAt: raffleEntity.updatedAt,
 				status: raffleEntity.status,
 				tickets: [],
+				winningTickets: raffleEntity.winningTickets,
 			});
 		});
 	}
@@ -188,6 +190,7 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 						createdAt: ticket.created_at,
 					}),
 				),
+				winningTickets: raffle.winningTickets,
 			}),
 		);
 	}
