@@ -63,7 +63,7 @@ export class Raffle {
 		this._drawnAt = data.drawnAt;
 	}
 
-	static create(data: Omit<RaffleAttributes, "status" | "tickets" | "winningTickets">): Raffle {
+	static create(data: Omit<RaffleAttributes, "status" | "tickets" | "winningTickets" | "drawnAt">): Raffle {
 		const createdAt = new Date();
 		const updatedAt = new Date();
 

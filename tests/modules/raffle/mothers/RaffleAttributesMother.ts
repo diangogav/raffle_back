@@ -20,6 +20,8 @@ export class RaffleAttributesMother {
 			cover: faker.image.url(),
 			status: faker.helpers.enumValue(RaffleStatus),
 			tickets: [TicketMother.create({ raffleId: id })],
+			winningTickets: [],
+			drawnAt: faker.date.past(),
 			...params,
 		};
 	}
