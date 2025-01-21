@@ -37,6 +37,14 @@ export class RaffleEntity {
 	})
 	status: RaffleStatus;
 
+	@Column({
+		type: "uuid",
+		array: true,
+		name: "winning_tickets",
+		nullable: true,
+	})
+	winningTickets?: string[] | null;
+
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;
 
