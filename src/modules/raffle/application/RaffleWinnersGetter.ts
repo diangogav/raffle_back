@@ -17,6 +17,8 @@ export class RaffleWinnersGetter {
 		return {
 			title: raffle.title,
 			cover: raffle.cover,
+			drawnAt: raffle.drawnAt,
+			endDate: raffle.endDate,
 			winnerTickets: winnerTickets.map((item) => ({
 				ticketId: item.id,
 				ticketNumber: item.ticketNumber,

@@ -20,6 +20,7 @@ export type RaffleAttributes = {
 	status: RaffleStatus;
 	tickets: Ticket[];
 	winningTickets: string[];
+	drawnAt: Date | null;
 };
 
 export type RaffleDateAttributes = {
@@ -40,6 +41,7 @@ export class Raffle {
 	public readonly totalTickets: number;
 	public readonly userId: string;
 	public readonly cover: string;
+	private _drawnAt: Date | null;
 	private _status: RaffleStatus;
 	private readonly tickets: Ticket[];
 	private _winningTickets: string[];
@@ -58,6 +60,7 @@ export class Raffle {
 		this._status = data.status;
 		this.tickets = data.tickets;
 		this._winningTickets = data.winningTickets;
+		this._drawnAt = data.drawnAt;
 	}
 
 	static create(data: Omit<RaffleAttributes, "status" | "tickets" | "winningTickets">): Raffle {
@@ -71,6 +74,7 @@ export class Raffle {
 			updatedAt,
 			tickets: [],
 			winningTickets: [],
+			drawnAt: null,
 		});
 	}
 
@@ -108,6 +112,7 @@ export class Raffle {
 			tickets: this.tickets,
 			ticketPriceBCV: this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2),
 			winningTickets: this._winningTickets,
+			drawnAt: this._drawnAt,
 		};
 	}
 
@@ -127,6 +132,7 @@ export class Raffle {
 			tickets: this.tickets,
 			ticketPriceBCV: this.toFixedNoRound(this.ticketPrice * exchangeRate.price, 2),
 			winningTickets: this._winningTickets,
+			drawnAt: this._drawnAt,
 		};
 	}
 
@@ -143,6 +149,7 @@ export class Raffle {
 		const winningTicket = this.tickets[randomIndex];
 		this._winningTickets = [winningTicket.id];
 		this._status = RaffleStatus.DRAWN;
+		this._drawnAt = new Date();
 
 		return winningTicket;
 	}
@@ -196,5 +203,9 @@ export class Raffle {
 
 	get winningTickets(): string[] {
 		return this._winningTickets;
+	}
+
+	get drawnAt(): Date | null {
+		return this._drawnAt;
 	}
 }

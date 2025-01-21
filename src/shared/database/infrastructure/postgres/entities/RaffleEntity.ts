@@ -40,6 +40,9 @@ export class RaffleEntity {
 	@Column({ type: "json", name: "winning_tickets", default: [] })
 	winningTickets: string[];
 
+	@Column({ type: "timestamp", name: "drawn_at", nullable: true })
+	drawnAt: Date | null;
+
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;
 
