@@ -1,7 +1,9 @@
+import { EmailSender } from "../../../shared/email/domain/EmailSender";
 import { DomainEventSubscriber } from "../../../shared/event-bus/infrastructure/InMemoryEventBus";
 import { Logger } from "../../../shared/logger/domain/Logger";
 import { UserRepository } from "../../user/domain/UserRepository";
 import { RaffleDrawnDomainEvent } from "../domain/RaffleDrawnDomainEvent";
+import { RaffleDrawnTemplate } from "../domain/RaffleDrawnTemplate";
 import { RaffleRepository } from "../domain/RaffleRepository";
 
 export class SendWinnerEmailWhenRaffleIsDrawn implements DomainEventSubscriber<RaffleDrawnDomainEvent> {
@@ -10,6 +12,7 @@ export class SendWinnerEmailWhenRaffleIsDrawn implements DomainEventSubscriber<R
 	constructor(
 		private readonly raffleRepository: RaffleRepository,
 		private readonly userRepository: UserRepository,
+		private readonly emailSender: EmailSender,
 		private readonly logger: Logger,
 	) {}
 
@@ -19,6 +22,21 @@ export class SendWinnerEmailWhenRaffleIsDrawn implements DomainEventSubscriber<R
 			const tickets = await this.raffleRepository.getTickets(event.data.raffleId);
 			const userIds = [...new Set([...tickets.map((ticket) => ticket.userId)])];
 			const users = await this.userRepository.findByIds(userIds);
+			const winnerTicket = tickets.find((ticket) => ticket.id === event.data.winnerTickets[0]);
+
+			if (!winnerTicket) {
+				return;
+			}
+
+			for (const user of users) {
+				const template = new RaffleDrawnTemplate({
+					raffleTitle: event.data.raffleTitle,
+					raffleCover: event.data.raffleCover,
+					winnerTicketNumber: winnerTicket.ticketNumber,
+				});
+
+				void this.emailSender.send({ template, to: user.email });
+			}
 			this.logger.info(users);
 		} catch (error) {
 			this.logger.error(error);

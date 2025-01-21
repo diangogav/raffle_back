@@ -1,5 +1,7 @@
 export type RaffleDrawnPayload = {
 	raffleId: string;
+	raffleTitle: string;
+	raffleCover: string;
 	winnerTickets: string[];
 	drawnAt: Date;
 };

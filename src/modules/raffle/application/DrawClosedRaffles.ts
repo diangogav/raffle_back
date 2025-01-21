@@ -41,6 +41,8 @@ export class DrawClosedRaffles implements Schedulable {
 					new RaffleDrawnDomainEvent({
 						winnerTickets: raffle.winningTickets,
 						raffleId: raffle.id,
+						raffleTitle: raffle.title,
+						raffleCover: raffle.cover,
 						drawnAt: raffle.drawnAt as Date,
 					}),
 				);

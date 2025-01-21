@@ -116,6 +116,7 @@ export class Server {
 			new SendWinnerEmailWhenRaffleIsDrawn(
 				new RafflePostgresRepository(),
 				new UserPostgresRepository(),
+				container.get(EmailSender),
 				this.logger,
 			),
 		);
