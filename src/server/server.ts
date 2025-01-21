@@ -2,6 +2,8 @@ import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
+import { SendWinnerEmailWhenRaffleIsDrawn } from "../modules/raffle/application/SendWinnerEmailWhenRaffleIsDrawn";
+import { RafflePostgresRepository } from "../modules/raffle/infrastructure/RafflePostgresRepository";
 import { SendEmailWhenTicketPaymentApproved } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentApproved";
 import { SendEmailWhenTicketPaymentDenied } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentDenied";
 import { SendEmailWhenTicketsPurchased } from "../modules/ticket-backoffice/application/SendEmailWhenTicketsPurchased";
@@ -14,7 +16,6 @@ import { EventBus } from "../shared/event-bus/domain/EventBus";
 import { Logger } from "../shared/logger/domain/Logger";
 import { UserFinderDomainService } from "../shared/user/domain/UserFinderDomainService";
 
-import { RafflePostgresRepository } from "./../modules/raffle/infrastructure/RafflePostgresRepository";
 import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
 import { ticketBackOfficeRoutes } from "./routes/ticket-backoffice.route";
@@ -107,6 +108,15 @@ export class Server {
 				this.logger,
 				new UserFinderDomainService(new UserPostgresRepository()),
 				container.get(EmailSender),
+			),
+		);
+
+		eventBus.subscribe(
+			SendWinnerEmailWhenRaffleIsDrawn.ListenTo,
+			new SendWinnerEmailWhenRaffleIsDrawn(
+				new RafflePostgresRepository(),
+				new UserPostgresRepository(),
+				this.logger,
 			),
 		);
 	}

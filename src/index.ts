@@ -4,6 +4,7 @@ import { Server } from "./server/server";
 import { Cron } from "./shared/cron/domain/Cron";
 import { PostgresTypeORM } from "./shared/database/infrastructure/postgres/PostgresTypeORM";
 import { container } from "./shared/dependency-injection";
+import { EventBus } from "./shared/event-bus/domain/EventBus";
 import { Logger } from "./shared/logger/domain/Logger";
 
 void (async () => {
@@ -15,5 +16,5 @@ void (async () => {
 	const server = new Server(logger);
 	server.start();
 	const cron = container.get(Cron);
-	await cron.schedule(new DrawClosedRaffles(new RafflePostgresRepository(), logger));
+	await cron.schedule(new DrawClosedRaffles(new RafflePostgresRepository(), logger, container.get(EventBus)));
 })();
