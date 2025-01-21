@@ -1,5 +1,7 @@
 import { Schedulable } from "../../../shared/cron/domain/Schedulable";
+import { EventBus } from "../../../shared/event-bus/domain/EventBus";
 import { Logger } from "../../../shared/logger/domain/Logger";
+import { RaffleDrawnDomainEvent } from "../domain/RaffleDrawnDomainEvent";
 import { RaffleRepository } from "../domain/RaffleRepository";
 import { RaffleStatus } from "../domain/RaffleStatus.enum";
 
@@ -7,6 +9,7 @@ export class DrawClosedRaffles implements Schedulable {
 	constructor(
 		private readonly repository: RaffleRepository,
 		private readonly logger: Logger,
+		private readonly eventBus: EventBus,
 	) {}
 
 	async execute(): Promise<void> {
@@ -30,6 +33,17 @@ export class DrawClosedRaffles implements Schedulable {
 
 				// eslint-disable-next-line no-await-in-loop
 				await this.repository.save(raffle);
+			}
+
+			for (const raffle of raffles) {
+				this.eventBus.publish(
+					RaffleDrawnDomainEvent.DOMAIN_EVENT,
+					new RaffleDrawnDomainEvent({
+						winnerTickets: raffle.winningTickets,
+						raffleId: raffle.id,
+						drawnAt: raffle.drawnAt as Date,
+					}),
+				);
 			}
 		} catch (error) {
 			this.logger.error(`Error error drawing the raffles`);
