@@ -208,12 +208,12 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
                         json_agg(
                                 jsonb_build_object(
                                         'id', tickets.id,
-                                        'ticket_number', tickets.ticket_number,
-                                        'user_id', tickets.user_id,
-                                        'payment_id', tickets.payment_id,
-                                        'created_at', tickets.created_at,
-                                        'updated_at', tickets.updated_at,
-                                        'deleted_at', tickets.deleted_at
+                                        'ticketNumber', tickets.ticket_number,
+                                        'userId', tickets.user_id,
+                                        'paymentId', tickets.payment_id,
+                                        'createdAt', tickets.created_at,
+                                        'updatedAt', tickets.updated_at,
+                                        'deletedAt', tickets.deleted_at
                                 )
                         ), '[]'
                 ) AS tickets
