@@ -23,4 +23,16 @@ export class RaffleAttributesMother {
 			...params,
 		};
 	}
+
+	static noClosed(): RaffleAttributes {
+		return RaffleAttributesMother.create({ status: RaffleAttributesMother.getRandomRaffleStatusExcludingClosed() });
+	}
+
+	static getRandomRaffleStatusExcludingClosed(): RaffleStatus {
+		const statuses = Object.values(RaffleStatus).filter((status) => status !== RaffleStatus.CLOSED);
+
+		const randomIndex = Math.floor(Math.random() * statuses.length);
+
+		return statuses[randomIndex];
+	}
 }

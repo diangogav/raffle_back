@@ -21,4 +21,10 @@ export interface RaffleRepository {
 	findById(raffleId: string): Promise<Raffle | null>;
 	saveTicket(ticket: Ticket): Promise<void>;
 	rafflesWithTickets(userId: string, statuses: RaffleStatus[]): Promise<Raffle[]>;
+	getRafflesByStatusAndEndDateGreaterThan(
+		status: RaffleStatus,
+		date: Date,
+		limit: number,
+		page: number,
+	): Promise<Raffle[]>;
 }

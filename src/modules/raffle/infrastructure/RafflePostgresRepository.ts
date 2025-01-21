@@ -159,7 +159,8 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
                 t.user_id = $1
               AND r.status = ANY($2)
             GROUP BY
-                r.id
+                r.id,
+            	r.end_date
             ORDER BY
                 r.end_date DESC
                 LIMIT 100;
@@ -187,6 +188,56 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 						createdAt: ticket.created_at,
 					}),
 				),
+			}),
+		);
+	}
+
+	async getRafflesByStatusAndEndDateGreaterThan(
+		status: RaffleStatus,
+		date: Date,
+		limit: number,
+		page: number,
+	): Promise<Raffle[]> {
+		const repository = dataSource.getRepository(RaffleEntity);
+
+		const response = await repository.query(
+			`
+            SELECT
+                raffles.*,
+                COALESCE(
+                        json_agg(
+                                jsonb_build_object(
+                                        'id', tickets.id,
+                                        'ticket_number', tickets.ticket_number,
+                                        'user_id', tickets.user_id,
+                                        'payment_id', tickets.payment_id,
+                                        'created_at', tickets.created_at,
+                                        'updated_at', tickets.updated_at,
+                                        'deleted_at', tickets.deleted_at
+                                )
+                        ), '[]'
+                ) AS tickets
+            FROM raffles
+                     JOIN tickets ON tickets.raffle_id = raffles.id
+            WHERE raffles.status = $1
+            AND end_date <= $2
+            GROUP BY raffles.id
+            LIMIT $3
+            OFFSET $4
+		`,
+			[status, date, limit, (page - 1) * limit],
+		);
+
+		return response.map((raffle) =>
+			Raffle.from({
+				...raffle,
+				ticketPrice: raffle.ticket_price,
+				endDate: raffle.end_date,
+				createdAt: raffle.created_at,
+				updatedAt: raffle.updated_at,
+				totalTickets: raffle.total_tickets,
+				userId: raffle.user_id,
+				tickets: raffle.tickets,
 			}),
 		);
 	}

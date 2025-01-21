@@ -118,6 +118,20 @@ export class Raffle {
 		};
 	}
 
+	selectWinner(): Ticket | null {
+		if (this._status !== RaffleStatus.CLOSED) {
+			throw new Error(`Raffle with id ${this.id} is not closed. Only closed raffles can have a winner.`);
+		}
+
+		if (this.tickets.length === 0) {
+			throw new Error("No tickets sold for this raffle.");
+		}
+
+		const randomIndex = Math.floor(Math.random() * this.tickets.length);
+
+		return this.tickets[randomIndex];
+	}
+
 	private generateTicket(
 		id: `${string}-${string}-${string}-${string}-${string}`,
 		ticketNumber: number,
