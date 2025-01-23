@@ -87,8 +87,17 @@ export class Raffle {
 
 		const id = randomUUID();
 		const ticket = this.generateTicket(id, ticketNumber, userId, paymentId);
-		if (+this.tickets.length === +this.totalTickets) {
+		const soldTicketsCount = +this.tickets.length;
+
+		if (soldTicketsCount === +this.totalTickets && this._status === RaffleStatus.SORTABLE) {
 			this._status = RaffleStatus.CLOSED;
+		}
+
+		if (
+			soldTicketsCount >= this.SORTABLE_TICKET_THRESHOLD(this.totalTickets) &&
+			this._status === RaffleStatus.ONGOING
+		) {
+			this._status = RaffleStatus.SORTABLE;
 		}
 
 		return ticket;
@@ -137,8 +146,10 @@ export class Raffle {
 	}
 
 	draw(): Ticket {
-		if (this._status !== RaffleStatus.CLOSED) {
-			throw new Error(`Raffle with id ${this.id} is not closed. Only closed raffles can have a winner.`);
+		if (this._status !== RaffleStatus.CLOSED && this._status !== RaffleStatus.SORTABLE) {
+			throw new Error(
+				`Raffle with id ${this.id} is not closed and is not sortable. Only closed or sortable raffles can have a winner.`,
+			);
 		}
 
 		if (this.tickets.length === 0) {
@@ -180,7 +191,7 @@ export class Raffle {
 	}
 
 	private IsValidTicket(ticketNumber: number) {
-		if (this._status !== RaffleStatus.ONGOING) {
+		if (this._status !== RaffleStatus.ONGOING && this._status !== RaffleStatus.SORTABLE) {
 			throw new Error(`Raffle with id ${this.id} not active.`);
 		}
 		const ticketTaken = this.tickets.find((ticket) => +ticket.ticketNumber === ticketNumber);
@@ -208,4 +219,6 @@ export class Raffle {
 	get drawnAt(): Date | null {
 		return this._drawnAt;
 	}
+
+	private readonly SORTABLE_TICKET_THRESHOLD = (totalTickets: number): number => Math.ceil(totalTickets / 2) + 1;
 }

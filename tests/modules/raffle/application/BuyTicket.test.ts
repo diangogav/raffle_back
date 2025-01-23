@@ -77,11 +77,11 @@ describe("BuyTicket", () => {
 			expect(useCase.buy(request)).rejects.toThrow(new Error(`Raffle with id ${raffle.id} not active.`));
 		});
 
-		it("Should throw and error if raffle status is distinct to ONGOING", async () => {
+		it("Should set the raffle status to CLOSED after purchasing the last ticket", async () => {
 			ticket = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "1" });
 			request.ticketNumbers = [2];
 			raffle = RaffleMother.create({
-				status: RaffleStatus.ONGOING,
+				status: RaffleStatus.SORTABLE,
 				totalTickets: 2,
 				tickets: [ticket],
 				id: request.raffleId,
@@ -89,6 +89,26 @@ describe("BuyTicket", () => {
 			repository.findById.mockResolvedValue(raffle);
 			await useCase.buy(request);
 			expect(raffle.status).toBe(RaffleStatus.CLOSED);
+		});
+
+		it("Should set the raffle status to SORTABLE when more than half of the tickets are sold", async () => {
+			const ticket1 = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "1" });
+			const ticket2 = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "2" });
+			const ticket3 = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "3" });
+			const ticket4 = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "4" });
+			const ticket5 = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "5" });
+			const ticket6 = TicketMother.create({ raffleId: request.raffleId, ticketNumber: "6" });
+
+			request.ticketNumbers = [10];
+			raffle = RaffleMother.create({
+				status: RaffleStatus.ONGOING,
+				totalTickets: 10,
+				tickets: [ticket1, ticket2, ticket3, ticket4, ticket5, ticket6],
+				id: request.raffleId,
+			});
+			repository.findById.mockResolvedValue(raffle);
+			await useCase.buy(request);
+			expect(raffle.status).toBe(RaffleStatus.SORTABLE);
 		});
 
 		it("Should throw an error if payment amount is less than total tickets prices", async () => {

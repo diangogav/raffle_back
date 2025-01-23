@@ -20,6 +20,9 @@ describe("Raffle", () => {
 		expect(raffle.endDate).toBe(params.endDate);
 		expect(raffle.totalTickets).toBe(params.totalTickets);
 		expect(raffle.userId).toBe(params.userId);
+		expect(raffle.status).toBe(RaffleStatus.PENDING);
+		expect(raffle.drawnAt).toBe(null);
+		expect(raffle.winningTickets).toEqual([]);
 	});
 
 	it("Should throw an Error if ticketPrice is lower or equal than 0", () => {
@@ -50,7 +53,9 @@ describe("Raffle", () => {
 			updatedAt: new Date(),
 		});
 		expect(() => raffle.draw()).toThrow(
-			new Error(`Raffle with id ${raffle.id} is not closed. Only closed raffles can have a winner.`),
+			new Error(
+				`Raffle with id ${raffle.id} is not closed and is not sortable. Only closed or sortable raffles can have a winner.`,
+			),
 		);
 	});
 
@@ -65,8 +70,20 @@ describe("Raffle", () => {
 		expect(() => raffle.draw()).toThrow(new Error(`No tickets sold for this raffle.`));
 	});
 
-	it("Should select winner correctly", () => {
+	it("Should select winner correctly if status is CLOSED", () => {
 		params.status = RaffleStatus.CLOSED;
+		const raffle = Raffle.from({
+			...params,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+		const winnerTicket = raffle.draw();
+
+		expect(winnerTicket).toEqual(params.tickets[0]);
+	});
+
+	it("Should select winner correctly if status is SORTABLE", () => {
+		params.status = RaffleStatus.SORTABLE;
 		const raffle = Raffle.from({
 			...params,
 			createdAt: new Date(),
