@@ -129,7 +129,7 @@ export const raffleRoutes = new Elysia({
 
 		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
-			statuses: [RaffleStatus.ONGOING, RaffleStatus.CLOSED],
+			statuses: [RaffleStatus.ONGOING, RaffleStatus.CLOSED, RaffleStatus.SORTABLE],
 		});
 	})
 	.get("/drawn", ({ bearer }) => {
@@ -151,6 +151,7 @@ export const raffleRoutes = new Elysia({
 				RaffleStatus.DRAWN,
 				RaffleStatus.WINNER_CONFIRMED,
 				RaffleStatus.FINISHED,
+				RaffleStatus.SORTABLE,
 			],
 		});
 	})
