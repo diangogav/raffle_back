@@ -11,6 +11,7 @@ function ensureEnvVariable(variable: string, variableName: string): string {
 }
 
 export const config = {
+	env: process.env.NODE_ENV ?? "development",
 	postgres: {
 		username: process.env.POSTGRES_USER,
 		password: process.env.POSTGRES_PASSWORD,
@@ -28,5 +29,9 @@ export const config = {
 	email: {
 		resendApiKey: ensureEnvVariable(process.env.RESEND_API_KEY as string, "RESEND_API_KEY"),
 		from: ensureEnvVariable(process.env.EMAIL_FROM as string, "EMAIL_FROM"),
+	},
+	slack: {
+		signingSecret: ensureEnvVariable(process.env.SLACK_SIGNING_SECRET as string, "SLACK_SIGNING_SECRET"),
+		botToken: ensureEnvVariable(process.env.SLACK_BOT_TOKEN as string, "SLACK_BOT_TOKEN"),
 	},
 };

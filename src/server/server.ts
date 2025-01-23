@@ -1,5 +1,6 @@
 import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
+import Slack from "@slack/bolt";
 import { Elysia } from "elysia";
 import { rateLimit } from "elysia-rate-limit";
 
@@ -17,6 +18,7 @@ import { EventBus } from "../shared/event-bus/domain/EventBus";
 import { Logger } from "../shared/logger/domain/Logger";
 import { UserFinderDomainService } from "../shared/user/domain/UserFinderDomainService";
 
+import { config } from "./../config/index";
 import { healthCheckRoutes } from "./routes/health-check-routes";
 import { raffleRoutes } from "./routes/raffle-routes";
 import { ticketBackOfficeRoutes } from "./routes/ticket-backoffice.route";
@@ -26,9 +28,14 @@ import { userRoutes } from "./routes/user-routes";
 export class Server {
 	private readonly app: Elysia;
 	private readonly logger: Logger;
+	private readonly slack: Slack.App;
 
 	constructor(logger: Logger) {
 		this.logger = logger;
+		this.slack = new Slack.App({
+			signingSecret: config.slack.signingSecret,
+			token: config.slack.botToken,
+		});
 		this.registerSubscribers();
 
 		this.app = new Elysia()
@@ -67,6 +74,40 @@ export class Server {
 
 				if (error instanceof UnauthorizedError) {
 					set.status = 401;
+				}
+
+				if (config.env === "production") {
+					const blocks = [
+						{
+							type: "section",
+							text: {
+								type: "mrkdwn",
+								text: "¿Dónde **** está el backend? :fire: :fire:",
+							},
+						},
+						{
+							type: "image",
+							image_url:
+								"https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3Q4d2tydGNsaTFhNDBsM2tjYWtkZDk2em10Yml5c2JxcjdlemxqOSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RfvBXK1m8Kcdq/giphy.gif",
+							alt_text: "funny GIF",
+						},
+						{
+							type: "section",
+							text: {
+								type: "mrkdwn",
+								text: error.stack,
+							},
+						},
+					];
+
+					void this.slack.client.chat.postMessage({
+						token: config.slack.botToken,
+						channel: "raffle-error-notifications",
+						text: "Error at Raffle API",
+						blocks,
+					});
+
+					return { message: "Internal server error" };
 				}
 
 				return error;
