@@ -26,12 +26,16 @@ export class RaffleAttributesMother {
 		};
 	}
 
-	static noClosed(): RaffleAttributes {
-		return RaffleAttributesMother.create({ status: RaffleAttributesMother.getRandomRaffleStatusExcludingClosed() });
+	static noClosedAndNoSortable(): RaffleAttributes {
+		return RaffleAttributesMother.create({
+			status: RaffleAttributesMother.getRandomRaffleStatusExcludingClosedAndSortable(),
+		});
 	}
 
-	static getRandomRaffleStatusExcludingClosed(): RaffleStatus {
-		const statuses = Object.values(RaffleStatus).filter((status) => status !== RaffleStatus.CLOSED);
+	static getRandomRaffleStatusExcludingClosedAndSortable(): RaffleStatus {
+		const statuses = Object.values(RaffleStatus).filter(
+			(status) => status !== RaffleStatus.CLOSED && status !== RaffleStatus.SORTABLE,
+		);
 
 		const randomIndex = Math.floor(Math.random() * statuses.length);
 

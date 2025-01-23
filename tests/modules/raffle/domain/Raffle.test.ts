@@ -46,7 +46,7 @@ describe("Raffle", () => {
 	});
 
 	it("Should throw an error if try to select winner in a no CLOSED raffle", () => {
-		params = RaffleAttributesMother.noClosed();
+		params = RaffleAttributesMother.noClosedAndNoSortable();
 		const raffle = Raffle.from({
 			...params,
 			createdAt: new Date(),
