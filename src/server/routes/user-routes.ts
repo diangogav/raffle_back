@@ -36,7 +36,7 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 					format: "email",
 				}),
 				phone: t.String({
-					format: "phone",
+					regex: /^\+?[1-9]\d{1,14}$/,
 				}),
 			}),
 			detail: {
