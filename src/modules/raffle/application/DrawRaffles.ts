@@ -5,7 +5,7 @@ import { RaffleDrawnDomainEvent } from "../domain/RaffleDrawnDomainEvent";
 import { RaffleRepository } from "../domain/RaffleRepository";
 import { RaffleStatus } from "../domain/RaffleStatus.enum";
 
-export class DrawClosedRaffles implements Schedulable {
+export class DrawRaffles implements Schedulable {
 	constructor(
 		private readonly repository: RaffleRepository,
 		private readonly logger: Logger,
@@ -16,12 +16,23 @@ export class DrawClosedRaffles implements Schedulable {
 		try {
 			this.logger.info("Searching pending raffles");
 
-			const raffles = await this.repository.getRafflesByStatusAndEndDateGreaterThan(
+			const closedRaffles = await this.repository.getRafflesByStatusAndEndDateGreaterThan(
 				RaffleStatus.CLOSED,
 				new Date(),
 				100,
 				1,
 			);
+
+			const sortableRaffles = await this.repository.getRafflesByStatusAndEndDateGreaterThan(
+				RaffleStatus.SORTABLE,
+				new Date(),
+				100,
+				1,
+			);
+
+			const raffles = [...closedRaffles, ...sortableRaffles];
+
+			this.logger.info(`Drawing raffles with ids: ${raffles.map((item) => item.id).join(" ")}`);
 
 			for (const raffle of raffles) {
 				const winnerTicket = raffle.draw();

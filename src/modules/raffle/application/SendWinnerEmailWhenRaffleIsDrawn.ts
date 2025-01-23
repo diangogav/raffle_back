@@ -21,6 +21,7 @@ export class SendWinnerEmailWhenRaffleIsDrawn implements DomainEventSubscriber<R
 			this.logger.info(JSON.stringify(event));
 			const tickets = await this.raffleRepository.getTickets(event.data.raffleId);
 			const userIds = [...new Set([...tickets.map((ticket) => ticket.userId)])];
+			this.logger.info(userIds);
 			const users = await this.userRepository.findByIds(userIds);
 			const winnerTicket = tickets.find((ticket) => ticket.id === event.data.winnerTickets[0]);
 
@@ -37,7 +38,6 @@ export class SendWinnerEmailWhenRaffleIsDrawn implements DomainEventSubscriber<R
 
 				void this.emailSender.send({ template, to: user.email });
 			}
-			this.logger.info(users);
 		} catch (error) {
 			this.logger.error(error);
 		}

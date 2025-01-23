@@ -1,4 +1,4 @@
-import { DrawClosedRaffles } from "./modules/raffle/application/DrawClosedRaffles";
+import { DrawRaffles } from "./modules/raffle/application/DrawRaffles";
 import { RafflePostgresRepository } from "./modules/raffle/infrastructure/RafflePostgresRepository";
 import { Server } from "./server/server";
 import { Cron } from "./shared/cron/domain/Cron";
@@ -16,5 +16,5 @@ void (async () => {
 	const server = new Server(logger);
 	server.start();
 	const cron = container.get(Cron);
-	await cron.schedule(new DrawClosedRaffles(new RafflePostgresRepository(), logger, container.get(EventBus)));
+	await cron.schedule(new DrawRaffles(new RafflePostgresRepository(), logger, container.get(EventBus)));
 })();
