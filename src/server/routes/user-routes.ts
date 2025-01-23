@@ -93,7 +93,9 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 						format: "email",
 					}),
 				),
-				phone: t.Optional(t.String()),
+				phone: t.String({
+					regex: /^\+?[1-9]\d{1,14}$/,
+				}),
 				password: t.Optional(t.String({ minLength: 4 })),
 				newPassword: t.Optional(t.String({ minLength: 4 })),
 			}),
