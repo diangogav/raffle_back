@@ -18,11 +18,13 @@ export class UserRegister {
 		name,
 		email,
 		password,
+		phone,
 	}: {
 		id: string;
 		name: string;
 		email: string;
 		password: string;
+		phone: string;
 	}): Promise<unknown> {
 		this.logger.info(`Creating new user with email: ${email} and name: ${name}`);
 
@@ -34,7 +36,7 @@ export class UserRegister {
 
 		const passwordHashed = await this.hash.hash(password);
 
-		const user = User.create({ id, name, email, password: passwordHashed });
+		const user = User.create({ id, name, email, password: passwordHashed, phone });
 
 		await this.repository.create(user);
 

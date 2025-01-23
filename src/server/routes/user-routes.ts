@@ -35,6 +35,9 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 				email: t.String({
 					format: "email",
 				}),
+				phone: t.String({
+					format: "phone",
+				}),
 			}),
 			detail: {
 				tags: ["Auth"],
