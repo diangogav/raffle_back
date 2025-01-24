@@ -2,6 +2,7 @@ import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import Slack from "@slack/bolt";
 import { Elysia } from "elysia";
+import { rateLimit } from "elysia-rate-limit";
 
 import { SendWinnerEmailWhenRaffleIsDrawn } from "../modules/raffle/application/SendWinnerEmailWhenRaffleIsDrawn";
 import { RafflePostgresRepository } from "../modules/raffle/infrastructure/RafflePostgresRepository";
@@ -38,7 +39,7 @@ export class Server {
 		this.registerSubscribers();
 
 		this.app = new Elysia()
-			// .use(rateLimit())
+			.use(rateLimit())
 			.use(cors())
 			.use(
 				swagger({
