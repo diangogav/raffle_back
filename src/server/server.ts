@@ -76,7 +76,7 @@ export class Server {
 					set.status = 401;
 				}
 
-				if (config.env === "production") {
+				if (config.env === "production" && set.status === 500) {
 					const blocks = [
 						{
 							type: "section",
