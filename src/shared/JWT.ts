@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { AuthenticationError } from "./errors";
+import { config } from "../config";
 
 export class JWT {
 	constructor(private readonly config: { issuer: string; secret: string }) {}
@@ -8,6 +9,7 @@ export class JWT {
 	generate(payload: { [key: string]: unknown }): string {
 		const options = {
 			issuer: this.config.issuer,
+			expiresIn: config.jwt.expiresIn,
 		};
 
 		return jwt.sign(payload, this.config.secret, options);

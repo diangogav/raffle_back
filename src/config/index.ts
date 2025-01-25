@@ -22,6 +22,7 @@ export const config = {
 	jwt: {
 		secret: ensureEnvVariable(process.env.JWT_SECRET as string, "JWT_SECRET"),
 		issuer: ensureEnvVariable(process.env.JWT_ISSUER as string, "JWT_ISSUER"),
+		expiresIn: ensureEnvVariable(process.env.JWT_EXPIRES_IN as string, "JWT_EXPIRES_IN"),
 	},
 	pyDollar: {
 		token: ensureEnvVariable(process.env.PY_DOLLAR_AUTH_TOKEN as string, "PY_DOLLAR_AUTH_TOKEN"),
