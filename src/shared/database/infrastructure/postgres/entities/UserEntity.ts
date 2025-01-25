@@ -1,4 +1,15 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm";
+import {
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	JoinTable,
+	ManyToMany,
+	PrimaryColumn,
+	UpdateDateColumn,
+} from "typeorm";
+
+import { RoleEntity } from "../../../../../modules/auth/infrastructure/RoleEntity";
 
 @Entity({
 	name: "users",
@@ -30,6 +41,14 @@ export class UserEntity {
 
 	@Column({ type: "varchar" })
 	password: string;
+
+	@ManyToMany(() => RoleEntity)
+	@JoinTable({
+		name: "user_roles",
+		joinColumn: { name: "user_id", referencedColumnName: "id" },
+		inverseJoinColumn: { name: "role_id", referencedColumnName: "id" },
+	})
+	roles: RoleEntity[];
 
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;
