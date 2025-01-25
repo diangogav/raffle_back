@@ -76,6 +76,7 @@ export class User {
 		return new User({
 			...this,
 			...payload,
+			roles: this._roles,
 		});
 	}
 
