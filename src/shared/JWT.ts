@@ -1,7 +1,8 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { AuthenticationError } from "./errors";
 import { config } from "../config";
+
+import { AuthenticationError } from "./errors";
 
 export class JWT {
 	constructor(private readonly config: { issuer: string; secret: string }) {}
