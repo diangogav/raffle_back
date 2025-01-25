@@ -3,6 +3,9 @@ import { randomUUID } from "crypto";
 import { Elysia, t } from "elysia";
 
 import { config } from "../../config";
+import { PermissionsValidator } from "../../modules/auth/application/PermissionsValidator";
+import { Permissions } from "../../modules/auth/domain/Permissions";
+import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
 import { PaymentMethod } from "../../modules/payment/domain/PaymentMethod.enum";
 import { PaymentPostgresRepository } from "../../modules/payment/infrastructure/PaymentPostgresRepository";
 import { BuyTicket } from "../../modules/raffle/application/BuyTicket";
@@ -22,6 +25,8 @@ const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();
 const exchangeRateRepository = new PyDollarExchangeRate();
 const jwt = new JWT(config.jwt);
+const roleRepository = container.get(RoleRepository);
+const permissionsValidator = new PermissionsValidator(roleRepository, jwt);
 
 export const raffleRoutes = new Elysia({
 	prefix: "/raffles",
@@ -81,6 +86,10 @@ export const raffleRoutes = new Elysia({
 		":raffleId/buy-ticket",
 		async ({ body, bearer, params }) => {
 			const token = jwt.decode(bearer as string) as { id: string };
+			await permissionsValidator.validate({
+				token: bearer as string,
+				requiredPermission: Permissions.CREATE_TICKET,
+			});
 			const raffleId = params.raffleId;
 			const paymentId = randomUUID();
 			const transaction = PostgresTypeORM.getInstance();
@@ -124,24 +133,39 @@ export const raffleRoutes = new Elysia({
 		},
 	)
 	.use(bearer())
-	.get("/not-drawn", ({ bearer }) => {
+	.get("/not-drawn", async ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
+
+		await permissionsValidator.validate({
+			token: bearer as string,
+			requiredPermission: Permissions.READ_RAFFLE,
+		});
 
 		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
 			statuses: [RaffleStatus.ONGOING, RaffleStatus.CLOSED, RaffleStatus.SORTABLE],
 		});
 	})
-	.get("/drawn", ({ bearer }) => {
+	.get("/drawn", async ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
+
+		await permissionsValidator.validate({
+			token: bearer as string,
+			requiredPermission: Permissions.READ_RAFFLE,
+		});
 
 		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
 			statuses: [RaffleStatus.DRAWN, RaffleStatus.WINNER_CONFIRMED, RaffleStatus.FINISHED],
 		});
 	})
-	.get("/", ({ bearer }) => {
+	.get("/", async ({ bearer }) => {
 		const token = jwt.decode(bearer as string) as { id: string };
+
+		await permissionsValidator.validate({
+			token: bearer as string,
+			requiredPermission: Permissions.READ_RAFFLE,
+		});
 
 		return new RafflesResumeGetter(repository, exchangeRateRepository).get({
 			userId: token.id,
@@ -160,6 +184,11 @@ export const raffleRoutes = new Elysia({
 		":raffleId/winners",
 		async ({ params, bearer }) => {
 			jwt.decode(bearer as string) as { id: string };
+
+			await permissionsValidator.validate({
+				token: bearer as string,
+				requiredPermission: Permissions.READ_RAFFLE,
+			});
 
 			const raffleId = params.raffleId;
 
