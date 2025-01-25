@@ -12,6 +12,7 @@ export class UserAuth {
 
 	async login({ email, password }: { email: string; password: string }): Promise<unknown> {
 		const user = await this.userRepository.findByEmail(email.toLowerCase());
+
 		if (!user) {
 			throw new AuthenticationError("Wrong email or password");
 		}

@@ -7,9 +7,11 @@ import { UserBackOfficePostgresRepository } from "src/modules/user-back-office/i
 
 import { config } from "../../config";
 import { UserAuth } from "../../modules/auth/application/UserAuth";
+import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
 import { UserFinder } from "../../modules/user/application/UserFinder";
 import { UserRegister } from "../../modules/user/application/UserRegister";
 import { UserPostgresRepository } from "../../modules/user/infrastructure/UserPostgresRepository";
+import { container } from "../../shared/dependency-injection";
 import { Hash } from "../../shared/Hash";
 import { JWT } from "../../shared/JWT";
 import { Pino } from "../../shared/logger/infrastructure/Pino";
@@ -26,7 +28,10 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 		async ({ body }) => {
 			const id = randomUUID();
 
-			return new UserRegister(repository, hash, logger, jwt).register({ ...body, id });
+			return new UserRegister(repository, container.get(RoleRepository), hash, logger, jwt).register({
+				...body,
+				id,
+			});
 		},
 		{
 			body: t.Object({

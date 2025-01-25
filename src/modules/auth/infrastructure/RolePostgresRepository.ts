@@ -1,4 +1,5 @@
 import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
+import { Role } from "../domain/Role";
 import { RoleRepository } from "../domain/RoleRepository";
 
 import { RoleEntity } from "./RoleEntity";
@@ -14,5 +15,19 @@ export class RolePostgresRepository extends RoleRepository {
 			.getOne();
 
 		return role?.permissions.map((permission) => permission.name as unknown as Permissions) ?? [];
+	}
+
+	async findRoleByName(name: string): Promise<Role | null> {
+		const repository = dataSource.getRepository(RoleEntity);
+
+		const role = await repository.findOne({
+			where: { name },
+		});
+
+		if (!role) {
+			return null;
+		}
+
+		return Role.from(role);
 	}
 }

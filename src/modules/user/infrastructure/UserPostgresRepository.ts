@@ -2,6 +2,7 @@ import { In } from "typeorm";
 
 import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
 import { UserEntity } from "../../../shared/database/infrastructure/postgres/entities/UserEntity";
+import { Role } from "../../auth/domain/Role";
 import { User } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
 
@@ -16,6 +17,7 @@ export class UserPostgresRepository implements UserRepository {
 			lastName: user.lastName,
 			address: user.address,
 			phone: user.phone,
+			roles: user.roles,
 		});
 		await repository.save(userProfileEntity);
 	}
@@ -26,24 +28,29 @@ export class UserPostgresRepository implements UserRepository {
 			where: {
 				email,
 			},
+			relations: ["roles"],
 		});
 
 		if (!userEntity) {
 			return null;
 		}
 
-		return User.from(userEntity);
+		const roles = userEntity.roles.map((role) => Role.from(role));
+
+		return User.from({ ...userEntity, roles });
 	}
 
 	async findById(id: string): Promise<User | null> {
 		const repository = dataSource.getRepository(UserEntity);
-		const userEntity = await repository.findOne({ where: { id } });
+		const userEntity = await repository.findOne({ where: { id }, relations: ["roles"] });
 
 		if (!userEntity) {
 			return null;
 		}
 
-		return User.from(userEntity);
+		const roles = userEntity.roles.map((role) => Role.from(role));
+
+		return User.from({ ...userEntity, roles });
 	}
 
 	async get(): Promise<User[]> {

@@ -2,12 +2,14 @@ import { ConflictError } from "../../../shared/errors";
 import { Hash } from "../../../shared/Hash";
 import { JWT } from "../../../shared/JWT";
 import { Logger } from "../../../shared/logger/domain/Logger";
+import { RoleRepository } from "../../auth/domain/RoleRepository";
 import { User } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
 
 export class UserRegister {
 	constructor(
 		private readonly repository: UserRepository,
+		private readonly roleRepository: RoleRepository,
 		private readonly hash: Hash,
 		private readonly logger: Logger,
 		private readonly jwt: JWT,
@@ -19,12 +21,14 @@ export class UserRegister {
 		email,
 		password,
 		phone,
+		roleName = "user",
 	}: {
 		id: string;
 		name: string;
 		email: string;
 		password: string;
 		phone: string;
+		roleName?: string;
 	}): Promise<unknown> {
 		this.logger.info(`Creating new user with email: ${email} and name: ${name}`);
 
@@ -36,7 +40,13 @@ export class UserRegister {
 
 		const passwordHashed = await this.hash.hash(password);
 
-		const user = User.create({ id, name, email, password: passwordHashed, phone });
+		const role = await this.roleRepository.findRoleByName(roleName);
+
+		if (!role) {
+			throw new ConflictError(`Role not allowed`);
+		}
+
+		const user = User.create({ id, name, email, password: passwordHashed, phone, roles: [role] });
 
 		await this.repository.create(user);
 

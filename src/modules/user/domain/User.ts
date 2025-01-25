@@ -1,3 +1,5 @@
+import { Role } from "../../auth/domain/Role";
+
 import { UserName } from "./value-objects/UserName";
 
 export type UpdateUserParams = {
@@ -18,6 +20,7 @@ export type UserAttributes = {
 	phone?: string | null;
 	dni?: string | null;
 	avatar?: string | null;
+	roles: Role[];
 };
 
 export type UserDateAttributes = {
@@ -39,6 +42,7 @@ export class User {
 	public readonly createdAt: Date;
 	public readonly updatedAt: Date;
 	public readonly deletedAt: Date | null;
+	private readonly _roles: Role[];
 
 	private constructor(data: UserAttributes & UserDateAttributes) {
 		this.id = data.id;
@@ -53,6 +57,7 @@ export class User {
 		this.createdAt = data.createdAt;
 		this.updatedAt = data.updatedAt;
 		this.deletedAt = data.deletedAt ?? null;
+		this._roles = data.roles;
 	}
 
 	static create(data: UserAttributes): User {
@@ -74,7 +79,7 @@ export class User {
 		});
 	}
 
-	toJson(): Omit<UserAttributes, "password"> {
+	toJson(): Omit<UserAttributes, "password" | "roles"> {
 		return {
 			id: this.id,
 			name: this.name,
@@ -82,5 +87,9 @@ export class User {
 			lastName: this.lastName,
 			phone: this.phone,
 		};
+	}
+
+	get roles(): Role[] {
+		return [...this._roles];
 	}
 }
