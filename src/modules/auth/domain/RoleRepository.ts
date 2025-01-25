@@ -1,3 +1,4 @@
+import { Permissions } from "./Permissions";
 import { Role } from "./Role";
 
 export abstract class RoleRepository {

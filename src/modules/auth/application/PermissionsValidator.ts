@@ -1,5 +1,6 @@
 import { UnauthorizedError } from "../../../shared/errors/UnauthorizedError";
 import { JWT } from "../../../shared/JWT";
+import { Permissions } from "../domain/Permissions";
 import { RoleRepository } from "../domain/RoleRepository";
 
 export class PermissionsValidator {
