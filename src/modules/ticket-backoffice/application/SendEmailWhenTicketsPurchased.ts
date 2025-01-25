@@ -16,6 +16,7 @@ export class SendEmailWhenTicketsPurchased implements DomainEventSubscriber<Tick
 
 	async handle(event: TicketsPurchasedDomainEvent): Promise<void> {
 		try {
+			this.logger.info("Executing SendEmailWhenTicketsPurchased...");
 			this.logger.info(JSON.stringify(event));
 
 			const user = await this.userFinderDomainService.find({ userId: event.data.userId });

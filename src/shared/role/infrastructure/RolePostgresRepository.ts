@@ -1,4 +1,5 @@
 import { dataSource } from "../../database/infrastructure/postgres/data-source";
+import { Permissions } from "../domain/Permissions";
 import { Role } from "../domain/Role";
 import { RoleRepository } from "../domain/RoleRepository";
 

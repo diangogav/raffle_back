@@ -9,6 +9,7 @@ import { RafflePostgresRepository } from "../modules/raffle/infrastructure/Raffl
 import { SendEmailWhenTicketPaymentApproved } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentApproved";
 import { SendEmailWhenTicketPaymentDenied } from "../modules/ticket-backoffice/application/SendEmailWhenTicketPaymentDenied";
 import { SendEmailWhenTicketsPurchased } from "../modules/ticket-backoffice/application/SendEmailWhenTicketsPurchased";
+import { SendSlackNotificationWhenTicketsPurchased } from "../modules/ticket-backoffice/application/SendSlackNotificationWhenTicketsPurchased";
 import { UserPostgresRepository } from "../modules/user/infrastructure/UserPostgresRepository";
 import { container } from "../shared/dependency-injection";
 import { EmailSender } from "../shared/email/domain/EmailSender";
@@ -16,6 +17,7 @@ import { AuthenticationError, ConflictError, InvalidArgumentError, NotFoundError
 import { SlackErrorMessage } from "../shared/errors/SlackErrorMessage";
 import { UnauthorizedError } from "../shared/errors/UnauthorizedError";
 import { EventBus } from "../shared/event-bus/domain/EventBus";
+import { PyDollarExchangeRate } from "../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
 import { Logger } from "../shared/logger/domain/Logger";
 import { SlackMessageSender } from "../shared/slack/domain/SlackMessageSender";
 import { UserFinderDomainService } from "../shared/user/domain/UserFinderDomainService";
@@ -132,6 +134,15 @@ export class Server {
 				new UserPostgresRepository(),
 				container.get(EmailSender),
 				this.logger,
+			),
+		);
+
+		eventBus.subscribe(
+			SendSlackNotificationWhenTicketsPurchased.ListenTo,
+			new SendSlackNotificationWhenTicketsPurchased(
+				this.logger,
+				this.slackMessageSender,
+				new PyDollarExchangeRate(),
 			),
 		);
 	}

@@ -59,6 +59,16 @@ export class BuyTicket {
 			new TicketsPurchasedDomainEvent({
 				ticketIds: tickets.map((ticket) => ticket.id),
 				userId: data.userId,
+				raffleTitle: raffle.title,
+				ticketsNumbers: tickets.map((ticket) => ticket.ticketNumber),
+				ticketPrice: raffle.ticketPrice,
+				paymentAmount: data.paymentAmount,
+				paymentMethod: data.paymentMethod,
+				paymentReference: data.reference,
+				paymentDate: new Date(),
+				email: data.email,
+				dni: data.dni,
+				phone: data.phone,
 			}),
 		);
 	}
