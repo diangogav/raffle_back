@@ -6,12 +6,12 @@ import { PostgresTypeORM } from "src/shared/database/infrastructure/postgres/Pos
 
 import { config } from "../../config";
 import { PermissionsValidator } from "../../modules/auth/application/PermissionsValidator";
-import { Permissions } from "../../modules/auth/domain/Permissions";
-import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
 import { TicketBackOfficePostgresRepository } from "../../modules/ticket-backoffice/infrastructure/TicketBackOfficePostgresRepository";
 import { container } from "../../shared/dependency-injection";
 import { EventBus } from "../../shared/event-bus/domain/EventBus";
 import { JWT } from "../../shared/JWT";
+import { Permissions } from "../../shared/role/domain/Permissions";
+import { RoleRepository } from "../../shared/role/domain/RoleRepository";
 
 const repository = new TicketBackOfficePostgresRepository();
 const jwt = new JWT(config.jwt);

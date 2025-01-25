@@ -1,7 +1,7 @@
 import { UnauthorizedError } from "../../../shared/errors/UnauthorizedError";
 import { JWT } from "../../../shared/JWT";
-import { Permissions } from "../domain/Permissions";
-import { RoleRepository } from "../domain/RoleRepository";
+import { Permissions } from "../../../shared/role/domain/Permissions";
+import { RoleRepository } from "../../../shared/role/domain/RoleRepository";
 
 export class PermissionsValidator {
 	constructor(

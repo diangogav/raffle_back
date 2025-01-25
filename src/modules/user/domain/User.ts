@@ -1,4 +1,4 @@
-import { Role } from "../../auth/domain/Role";
+import { Role } from "../../../shared/role/domain/Role";
 
 import { UserName } from "./value-objects/UserName";
 

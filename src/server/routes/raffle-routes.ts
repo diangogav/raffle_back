@@ -4,8 +4,6 @@ import { Elysia, t } from "elysia";
 
 import { config } from "../../config";
 import { PermissionsValidator } from "../../modules/auth/application/PermissionsValidator";
-import { Permissions } from "../../modules/auth/domain/Permissions";
-import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
 import { PaymentMethod } from "../../modules/payment/domain/PaymentMethod.enum";
 import { PaymentPostgresRepository } from "../../modules/payment/infrastructure/PaymentPostgresRepository";
 import { BuyTicket } from "../../modules/raffle/application/BuyTicket";
@@ -20,6 +18,8 @@ import { container } from "../../shared/dependency-injection";
 import { EventBus } from "../../shared/event-bus/domain/EventBus";
 import { PyDollarExchangeRate } from "../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
 import { JWT } from "../../shared/JWT";
+import { Permissions } from "../../shared/role/domain/Permissions";
+import { RoleRepository } from "../../shared/role/domain/RoleRepository";
 
 const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();

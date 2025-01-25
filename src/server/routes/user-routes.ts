@@ -8,8 +8,6 @@ import { UserBackOfficePostgresRepository } from "src/modules/user-back-office/i
 import { config } from "../../config";
 import { PermissionsValidator } from "../../modules/auth/application/PermissionsValidator";
 import { UserAuth } from "../../modules/auth/application/UserAuth";
-import { Permissions } from "../../modules/auth/domain/Permissions";
-import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
 import { UserFinder } from "../../modules/user/application/UserFinder";
 import { UserRegister } from "../../modules/user/application/UserRegister";
 import { UserPostgresRepository } from "../../modules/user/infrastructure/UserPostgresRepository";
@@ -17,6 +15,8 @@ import { container } from "../../shared/dependency-injection";
 import { Hash } from "../../shared/Hash";
 import { JWT } from "../../shared/JWT";
 import { Pino } from "../../shared/logger/infrastructure/Pino";
+import { Permissions } from "../../shared/role/domain/Permissions";
+import { RoleRepository } from "../../shared/role/domain/RoleRepository";
 
 const repository = new UserPostgresRepository();
 const userBackOfficeRepository = new UserBackOfficePostgresRepository();

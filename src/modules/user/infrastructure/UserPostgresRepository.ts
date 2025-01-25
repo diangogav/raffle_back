@@ -2,7 +2,7 @@ import { In } from "typeorm";
 
 import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
 import { UserEntity } from "../../../shared/database/infrastructure/postgres/entities/UserEntity";
-import { Role } from "../../auth/domain/Role";
+import { Role } from "../../../shared/role/domain/Role";
 import { User } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
 

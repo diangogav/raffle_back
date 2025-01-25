@@ -9,7 +9,7 @@ import {
 	UpdateDateColumn,
 } from "typeorm";
 
-import { RoleEntity } from "../../../../../modules/auth/infrastructure/RoleEntity";
+import { RoleEntity } from "../../../../role/infrastructure/RoleEntity";
 
 @Entity({
 	name: "users",

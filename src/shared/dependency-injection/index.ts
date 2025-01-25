@@ -1,7 +1,5 @@
 import { ContainerBuilder } from "diod";
 
-import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
-import { RolePostgresRepository } from "../../modules/auth/infrastructure/RolePostgresRepository";
 import { Cron } from "../cron/domain/Cron";
 import { NodeCron } from "../cron/infrastructure/NodeCron";
 import { EmailSender } from "../email/domain/EmailSender";
@@ -10,6 +8,8 @@ import { EventBus } from "../event-bus/domain/EventBus";
 import { InMemoryEventBus } from "../event-bus/infrastructure/InMemoryEventBus";
 import { Logger } from "../logger/domain/Logger";
 import { Pino } from "../logger/infrastructure/Pino";
+import { RoleRepository } from "../role/domain/RoleRepository";
+import { RolePostgresRepository } from "../role/infrastructure/RolePostgresRepository";
 import { SlackMessageSender } from "../slack/domain/SlackMessageSender";
 import { SlackBoltMessageSender } from "../slack/infrastructure/SlackBoltMessageSender";
 

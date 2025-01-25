@@ -1,8 +1,8 @@
 import { DataSource, DataSourceOptions } from "typeorm";
 
 import { config } from "../../../../config";
-import { PermissionEntity } from "../../../../modules/auth/infrastructure/PermissionEntity";
-import { RoleEntity } from "../../../../modules/auth/infrastructure/RoleEntity";
+import { PermissionEntity } from "../../../role/infrastructure/PermissionEntity";
+import { RoleEntity } from "../../../role/infrastructure/RoleEntity";
 
 import { PaymentEntity } from "./entities/PaymentEntity";
 import { RaffleEntity } from "./entities/RaffleEntity";

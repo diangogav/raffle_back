@@ -1,4 +1,4 @@
-import { dataSource } from "../../../shared/database/infrastructure/postgres/data-source";
+import { dataSource } from "../../database/infrastructure/postgres/data-source";
 import { Role } from "../domain/Role";
 import { RoleRepository } from "../domain/RoleRepository";
 

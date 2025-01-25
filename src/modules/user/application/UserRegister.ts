@@ -2,7 +2,7 @@ import { ConflictError } from "../../../shared/errors";
 import { Hash } from "../../../shared/Hash";
 import { JWT } from "../../../shared/JWT";
 import { Logger } from "../../../shared/logger/domain/Logger";
-import { RoleRepository } from "../../auth/domain/RoleRepository";
+import { RoleRepository } from "../../../shared/role/domain/RoleRepository";
 import { User } from "../domain/User";
 import { UserRepository } from "../domain/UserRepository";
 
