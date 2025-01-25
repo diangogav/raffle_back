@@ -6,7 +6,9 @@ import { UserBackOfficeGetter } from "src/modules/user-back-office/application/U
 import { UserBackOfficePostgresRepository } from "src/modules/user-back-office/infrastructure/UserBackOfficePostgresRepository";
 
 import { config } from "../../config";
+import { PermissionsValidator } from "../../modules/auth/application/PermissionsValidator";
 import { UserAuth } from "../../modules/auth/application/UserAuth";
+import { Permissions } from "../../modules/auth/domain/Permissions";
 import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
 import { UserFinder } from "../../modules/user/application/UserFinder";
 import { UserRegister } from "../../modules/user/application/UserRegister";
@@ -21,6 +23,8 @@ const userBackOfficeRepository = new UserBackOfficePostgresRepository();
 const hash = new Hash();
 const logger = new Pino();
 const jwt = new JWT(config.jwt);
+const roleRepository = container.get(RoleRepository);
+const permissionsValidator = new PermissionsValidator(roleRepository, jwt);
 
 export const userRoutes = new Elysia({ prefix: "/users" })
 	.post(
@@ -64,7 +68,15 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 			},
 		},
 	)
-	.get("/", async () => {
+	.use(bearer())
+	.get("/", async ({ bearer }) => {
+		jwt.decode(bearer as string) as { id: string };
+
+		await permissionsValidator.validate({
+			token: bearer as string,
+			requiredPermission: Permissions.BACK_OFFICE_READ_USER,
+		});
+
 		return new UserBackOfficeGetter(userBackOfficeRepository).get();
 	})
 	.use(bearer())
@@ -72,6 +84,11 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 		"/profile",
 		async ({ bearer }) => {
 			const token = jwt.decode(bearer as string) as { id: string };
+
+			await permissionsValidator.validate({
+				token: bearer as string,
+				requiredPermission: Permissions.READ_USER,
+			});
 
 			return new UserFinder(repository).find({ userId: token.id });
 		},
@@ -86,6 +103,11 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 		"/",
 		async ({ body, bearer }) => {
 			const token = jwt.decode(bearer as string) as { id: string };
+
+			await permissionsValidator.validate({
+				token: bearer as string,
+				requiredPermission: Permissions.UPDATE_USER,
+			});
 
 			return new UserUpdater(repository, hash).update(token.id, body);
 		},
