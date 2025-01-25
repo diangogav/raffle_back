@@ -9,9 +9,9 @@ export class PermissionsValidator {
 	) {}
 
 	async validate({ token, requiredPermission }: { token: string; requiredPermission: Permissions }): Promise<void> {
-		const payload = this.jwt.decode(token as string) as { role: string };
+		const payload = this.jwt.decode(token as string) as { roles: string[] };
 
-		const permissions = await this.roleRepository.getPermissionsByRole(payload.role);
+		const permissions = await this.roleRepository.getPermissionsByRoles(payload.roles);
 
 		const hasPermission = permissions.some((permission) => permission === requiredPermission);
 

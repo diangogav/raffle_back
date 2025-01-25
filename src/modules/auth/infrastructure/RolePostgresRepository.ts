@@ -30,4 +30,24 @@ export class RolePostgresRepository extends RoleRepository {
 
 		return Role.from(role);
 	}
+
+	async getPermissionsByRoles(roleNames: string[]): Promise<Permissions[]> {
+		const repository = dataSource.getRepository(RoleEntity);
+
+		const roles = await repository
+			.createQueryBuilder("role")
+			.leftJoinAndSelect("role.permissions", "permission")
+			.where("role.name IN (:...roleNames)", { roleNames })
+			.getMany();
+
+		const permissions: Permissions[] = [];
+
+		roles.forEach((role) => {
+			role.permissions.forEach((permission) => {
+				permissions.push(permission.name as unknown as Permissions);
+			});
+		});
+
+		return permissions;
+	}
 }
