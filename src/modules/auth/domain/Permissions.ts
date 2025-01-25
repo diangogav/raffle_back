@@ -8,4 +8,6 @@ export enum Permissions {
 	READ_USER = "read.user",
 	CREATE_USER = "create.user",
 	UPDATE_USER = "update.user",
+	BACKOFFICE_READ_USER_TICKET = "backoffice.read.user.ticket",
+	BACK_OFFICE_READ_USER = "backoffice.read.user",
 }
