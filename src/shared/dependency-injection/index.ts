@@ -1,5 +1,7 @@
 import { ContainerBuilder } from "diod";
 
+import { RoleRepository } from "../../modules/auth/domain/RoleRepository";
+import { RolePostgresRepository } from "../../modules/auth/infrastructure/RolePostgresRepository";
 import { Cron } from "../cron/domain/Cron";
 import { NodeCron } from "../cron/infrastructure/NodeCron";
 import { EmailSender } from "../email/domain/EmailSender";
@@ -18,5 +20,8 @@ builder.register(EmailSender).use(ResendEmailSender).asSingleton();
 builder.register(Logger).use(Pino).asSingleton();
 builder.register(Cron).use(NodeCron);
 builder.register(SlackMessageSender).use(SlackBoltMessageSender).asSingleton();
+
+// Repositories
+builder.register(RoleRepository).use(RolePostgresRepository);
 
 export const container = builder.build();

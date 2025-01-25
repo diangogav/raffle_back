@@ -9,8 +9,6 @@ import {
 	UpdateDateColumn,
 } from "typeorm";
 
-import { Permissions } from "../domain/Permissions";
-
 import { PermissionEntity } from "./PermissionEntity";
 
 @Entity({
@@ -32,7 +30,7 @@ export class RoleEntity {
 		joinColumn: { name: "role_id", referencedColumnName: "id" },
 		inverseJoinColumn: { name: "permission_id", referencedColumnName: "id" },
 	})
-	permissions: Permissions[];
+	permissions: PermissionEntity[];
 
 	@CreateDateColumn({ name: "created_at" })
 	createdAt: Date;
