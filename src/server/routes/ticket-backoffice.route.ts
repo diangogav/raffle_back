@@ -1,4 +1,3 @@
-import bearer from "@elysiajs/bearer";
 import { Elysia } from "elysia";
 import { ApproveTicketPayment } from "src/modules/ticket-backoffice/application/ApproveTicketPayment";
 import { DenyTicketPayment } from "src/modules/ticket-backoffice/application/DenyTicketPayment";
@@ -10,13 +9,12 @@ import { TicketBackOfficePostgresRepository } from "../../modules/ticket-backoff
 import { container } from "../../shared/dependency-injection";
 import { EventBus } from "../../shared/event-bus/domain/EventBus";
 import { JWT } from "../../shared/JWT";
-import { Permissions } from "../../shared/role/domain/Permissions";
 import { RoleRepository } from "../../shared/role/domain/RoleRepository";
 
 const repository = new TicketBackOfficePostgresRepository();
 const jwt = new JWT(config.jwt);
 const roleRepository = container.get(RoleRepository);
-const permissionsValidator = new PermissionsValidator(roleRepository, jwt);
+const _permissionsValidator = new PermissionsValidator(roleRepository, jwt);
 
 export const ticketBackOfficeRoutes = new Elysia({
 	prefix: "/back-office/tickets",
@@ -24,14 +22,14 @@ export const ticketBackOfficeRoutes = new Elysia({
 		tags: ["Back Office"],
 	},
 })
-	.use(bearer())
-	.patch("/:ticketId/approve", async ({ params, bearer }) => {
+	// .use(bearer())
+	.patch("/:ticketId/approve", async ({ params }) => {
 		const ticketId = params.ticketId;
-		jwt.decode(bearer as string) as { id: string };
-		await permissionsValidator.validate({
-			token: bearer as string,
-			requiredPermission: Permissions.APPROVE_TICKET_PAYMENT,
-		});
+		// jwt.decode(bearer as string) as { id: string };
+		// await permissionsValidator.validate({
+		// 	token: bearer as string,
+		// 	requiredPermission: Permissions.APPROVE_TICKET_PAYMENT,
+		// });
 
 		const transaction = PostgresTypeORM.getInstance();
 
@@ -49,13 +47,13 @@ export const ticketBackOfficeRoutes = new Elysia({
 			await transaction.closeTransaction();
 		}
 	})
-	.use(bearer())
-	.patch("/:ticketId/deny", async ({ params, bearer }) => {
-		jwt.decode(bearer as string) as { id: string };
-		await permissionsValidator.validate({
-			token: bearer as string,
-			requiredPermission: Permissions.DENY_TICKET_PAYMENT,
-		});
+	// .use(bearer())
+	.patch("/:ticketId/deny", async ({ params }) => {
+		// jwt.decode(bearer as string) as { id: string };
+		// await permissionsValidator.validate({
+		// 	token: bearer as string,
+		// 	requiredPermission: Permissions.DENY_TICKET_PAYMENT,
+		// });
 		const ticketId = params.ticketId;
 		const transaction = PostgresTypeORM.getInstance();
 

@@ -68,14 +68,14 @@ export const userRoutes = new Elysia({ prefix: "/users" })
 			},
 		},
 	)
-	.use(bearer())
-	.get("/", async ({ bearer }) => {
-		jwt.decode(bearer as string) as { id: string };
+	// .use(bearer())
+	.get("/", async () => {
+		// jwt.decode(bearer as string) as { id: string };
 
-		await permissionsValidator.validate({
-			token: bearer as string,
-			requiredPermission: Permissions.BACK_OFFICE_READ_USER,
-		});
+		// await permissionsValidator.validate({
+		// 	token: bearer as string,
+		// 	requiredPermission: Permissions.BACK_OFFICE_READ_USER,
+		// });
 
 		return new UserBackOfficeGetter(userBackOfficeRepository).get();
 	})
