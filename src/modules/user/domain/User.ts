@@ -92,4 +92,8 @@ export class User {
 	get roles(): Role[] {
 		return [...this._roles];
 	}
+
+	get rolesName(): string[] {
+		return this._roles.map((role) => role.name);
+	}
 }

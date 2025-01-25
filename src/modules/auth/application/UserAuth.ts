@@ -23,7 +23,7 @@ export class UserAuth {
 			throw new AuthenticationError("Wrong email or password");
 		}
 
-		const token = this.jwt.generate({ id: user.id, name: user.name, email: user.email });
+		const token = this.jwt.generate({ id: user.id, name: user.name, email: user.email, roles: user.rolesName });
 
 		return {
 			token,
