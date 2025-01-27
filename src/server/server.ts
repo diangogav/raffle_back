@@ -78,7 +78,10 @@ export class Server {
 
 				if (config.env === "production" && set.status === 500) {
 					const slackErrorTemplate = new SlackErrorMessage(error);
-					void this.slackMessageSender.send({ template: slackErrorTemplate });
+					void this.slackMessageSender.send({ template: slackErrorTemplate }).catch((error) => {
+						this.logger.error("Error sending error message to slack");
+						this.logger.error(error);
+					});
 
 					return { message: "Internal server error" };
 				}
