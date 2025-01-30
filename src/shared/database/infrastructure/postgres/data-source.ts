@@ -4,6 +4,7 @@ import { config } from "../../../../config";
 import { PermissionEntity } from "../../../role/infrastructure/PermissionEntity";
 import { RoleEntity } from "../../../role/infrastructure/RoleEntity";
 
+import { ExchangeRateEntity } from "./entities/ExchangeRateEntity";
 import { PaymentEntity } from "./entities/PaymentEntity";
 import { RaffleEntity } from "./entities/RaffleEntity";
 import { TicketEntity } from "./entities/TicketEntity";
@@ -21,7 +22,7 @@ const options: DataSourceOptions = {
 	ssl: {
 		rejectUnauthorized: false,
 	},
-	entities: [UserEntity, RaffleEntity, TicketEntity, PaymentEntity, RoleEntity, PermissionEntity],
+	entities: [UserEntity, RaffleEntity, TicketEntity, PaymentEntity, RoleEntity, PermissionEntity, ExchangeRateEntity],
 	subscribers: [],
 	migrations: ["src/shared/database/infrastructure/postgres/migrations/*.ts"],
 };
