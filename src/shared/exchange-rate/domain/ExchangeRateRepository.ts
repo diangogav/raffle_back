@@ -1,5 +1,5 @@
 import { ExchangeRate } from "./ExchangeRate";
 
-export interface ExchangeRateRepository {
-	dollarToBCVRate(): Promise<ExchangeRate>;
+export abstract class ExchangeRateRepository {
+	abstract dollarToBCVRate(): Promise<ExchangeRate>;
 }

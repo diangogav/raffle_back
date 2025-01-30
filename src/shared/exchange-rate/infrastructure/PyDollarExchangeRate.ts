@@ -2,8 +2,6 @@ import { ExchangeRate } from "../domain/ExchangeRate";
 import { ExchangeRateRepository } from "../domain/ExchangeRateRepository";
 
 import { config } from "./../../../config/index";
-import { dataSource } from "./../../database/infrastructure/postgres/data-source";
-import { ExchangeRateEntity } from "./../../database/infrastructure/postgres/entities/ExchangeRateEntity";
 
 interface Monitor {
 	change: number; // e.g., 0.41
@@ -37,30 +35,6 @@ export class PyDollarExchangeRate implements ExchangeRateRepository {
 				Authorization: `Bearer ${this.API_TOKEN}`,
 			},
 		});
-
-		if (!response.ok) {
-			const repository = dataSource.getRepository(ExchangeRateEntity);
-			const exchangeRate = await repository.findOne({
-				where: {
-					to: "BCV",
-					from: "Dollar",
-				},
-				order: {
-					date: "DESC",
-				},
-			});
-
-			if (!exchangeRate) {
-				throw new Error("Exchange rate not found");
-			}
-
-			return new ExchangeRate(
-				exchangeRate.date.toISOString(),
-				exchangeRate.from,
-				exchangeRate.to,
-				exchangeRate.price,
-			);
-		}
 
 		const data: ExchangeRateResponse = await response.json();
 

@@ -17,7 +17,7 @@ import { AuthenticationError, ConflictError, InvalidArgumentError, NotFoundError
 import { SlackErrorMessage } from "../shared/errors/SlackErrorMessage";
 import { UnauthorizedError } from "../shared/errors/UnauthorizedError";
 import { EventBus } from "../shared/event-bus/domain/EventBus";
-import { PyDollarExchangeRate } from "../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
+import { ExchangeRateRepository } from "../shared/exchange-rate/domain/ExchangeRateRepository";
 import { Logger } from "../shared/logger/domain/Logger";
 import { SlackMessageSender } from "../shared/slack/domain/SlackMessageSender";
 import { UserFinderDomainService } from "../shared/user/domain/UserFinderDomainService";
@@ -145,7 +145,7 @@ export class Server {
 			new SendSlackNotificationWhenTicketsPurchased(
 				this.logger,
 				this.slackMessageSender,
-				new PyDollarExchangeRate(),
+				container.get(ExchangeRateRepository),
 			),
 		);
 	}

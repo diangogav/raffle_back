@@ -1,6 +1,7 @@
 import bearer from "@elysiajs/bearer";
 import { randomUUID } from "crypto";
 import { Elysia, t } from "elysia";
+import { ExchangeRateRepository } from "src/shared/exchange-rate/domain/ExchangeRateRepository";
 
 import { config } from "../../config";
 import { PermissionsValidator } from "../../modules/auth/application/PermissionsValidator";
@@ -16,14 +17,13 @@ import { RafflePostgresRepository } from "../../modules/raffle/infrastructure/Ra
 import { PostgresTypeORM } from "../../shared/database/infrastructure/postgres/PostgresTypeORM";
 import { container } from "../../shared/dependency-injection";
 import { EventBus } from "../../shared/event-bus/domain/EventBus";
-import { PyDollarExchangeRate } from "../../shared/exchange-rate/infrastructure/PyDollarExchangeRate";
 import { JWT } from "../../shared/JWT";
 import { Permissions } from "../../shared/role/domain/Permissions";
 import { RoleRepository } from "../../shared/role/domain/RoleRepository";
 
 const repository = new RafflePostgresRepository();
 const paymentRepository = new PaymentPostgresRepository();
-const exchangeRateRepository = new PyDollarExchangeRate();
+const exchangeRateRepository = container.get(ExchangeRateRepository);
 const jwt = new JWT(config.jwt);
 const roleRepository = container.get(RoleRepository);
 const permissionsValidator = new PermissionsValidator(roleRepository, jwt);
