@@ -74,7 +74,7 @@ export class PaymentApprovedTemplate extends Template {
               </div>
             </div>
             <div style="width: 200px; text-align: center;">
-              <img src="https://storage.googleapis.com/fir-auth-1c3bc.appspot.com/1694155440745-619--Jabh2L._SL1048_.jpg" alt="" width="100%" height="auto">
+              <img src=${this.data.raffleImage} alt="" width="100%" height="auto">
             </div>
           </div>
         </div>
