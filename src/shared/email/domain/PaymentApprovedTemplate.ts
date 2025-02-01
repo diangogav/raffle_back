@@ -1,6 +1,5 @@
-import { ZonedDate } from "src/shared/date/ZonedDate";
-
 import { config } from "../../../config/index";
+import { TimeZoneDateTime } from "../../date/TimeZoneDateTime";
 
 import { Template } from "./Template";
 
@@ -13,12 +12,12 @@ type PaymentApprovedTemplateParams = {
 };
 export class PaymentApprovedTemplate extends Template {
 	public readonly subject: string;
-	private readonly drawDate: Date;
+	private readonly drawDate: string;
 
 	constructor(private readonly data: PaymentApprovedTemplateParams) {
 		super();
 		this.subject = "Pago Aprobado!";
-		this.drawDate = new ZonedDate(data.drawDate, config.timezone).value;
+		this.drawDate = new TimeZoneDateTime(data.drawDate, config.timezone).value;
 	}
 
 	value(): string {
@@ -67,10 +66,10 @@ export class PaymentApprovedTemplate extends Template {
                   <p><b>Tickets:</b> ${this.data.ticketNumbers.join(" ")} </p>
               </div>
               <div style="display: flex; align-items: center; margin-bottom: -9px;">
-                  <p><b>Fecha del sorteo:</b> ${this.drawDate.toLocaleDateString()} </p>
+                  <p><b>Fecha del sorteo:</b> ${this.drawDate} </p>
               </div>
               <div style="display: flex; align-items: center; margin-bottom: -9px;">
-                  <p><b>Hora del Sorteo:</b> ${this.drawDate.toLocaleTimeString()}</p>
+                  <p><b>Hora del Sorteo:</b> ${this.drawDate}</p>
               </div>
               <div style="display: flex; align-items: center;">
                   <p><b>Valor:</b> $${this.data.ticketPrice} </p>
