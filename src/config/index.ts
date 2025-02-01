@@ -35,4 +35,5 @@ export const config = {
 		signingSecret: ensureEnvVariable(process.env.SLACK_SIGNING_SECRET as string, "SLACK_SIGNING_SECRET"),
 		botToken: ensureEnvVariable(process.env.SLACK_BOT_TOKEN as string, "SLACK_BOT_TOKEN"),
 	},
+	timezone: "America/Caracas",
 };
