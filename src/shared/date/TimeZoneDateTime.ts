@@ -1,7 +1,8 @@
 import { DateTime } from "luxon";
 
 export class TimeZoneDateTime {
-	public readonly value: string;
+	public readonly localeDate: string;
+	public readonly localeTime: string;
 	constructor(
 		private readonly date: Date,
 		private readonly timezone: string,
@@ -14,6 +15,7 @@ export class TimeZoneDateTime {
 			throw new Error("Invalid date");
 		}
 
-		this.value = isoDateInTargetZone;
+		this.localeDate = dateInTargetZone.toLocaleString();
+		this.localeTime = dateInTargetZone.toFormat("hh:mm a");
 	}
 }
