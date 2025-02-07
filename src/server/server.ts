@@ -39,7 +39,7 @@ export class Server {
 		this.registerSubscribers();
 
 		this.app = new Elysia()
-			.use(rateLimit({ max: 100 }))
+			.use(rateLimit({ max: 1000 }))
 			.use(cors())
 			.use(
 				swagger({
