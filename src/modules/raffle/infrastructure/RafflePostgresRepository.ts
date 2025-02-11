@@ -29,22 +29,24 @@ export class RafflePostgresRepository extends PostgresTypeORMRepository implemen
 		await repository.save(raffleEntity);
 	}
 
-	async getOngoingRafflesSortedBy({
+	async getRafflesSortedBy({
 		field,
 		direction,
 		limit,
 		page,
+		statuses,
 	}: {
 		field: string;
 		direction: "ASC" | "DESC";
 		limit: number;
 		page: number;
+		statuses: RaffleStatus[];
 	}): Promise<Raffle[]> {
 		const repository = dataSource.getRepository(RaffleEntity);
 
 		const raffles = await repository.find({
 			where: {
-				status: RaffleStatus.ONGOING,
+				status: In(statuses),
 			},
 			order: {
 				[field]: direction,

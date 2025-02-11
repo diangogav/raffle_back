@@ -5,16 +5,18 @@ import { RaffleStatus } from "./RaffleStatus.enum";
 
 export interface RaffleRepository {
 	save(raffle: Raffle): Promise<void>;
-	getOngoingRafflesSortedBy({
+	getRafflesSortedBy({
 		field,
 		direction,
 		limit,
 		page,
+		statuses,
 	}: {
 		field: string;
 		direction: "ASC" | "DESC";
 		limit: number;
 		page: number;
+		statuses: RaffleStatus[];
 	}): Promise<Raffle[]>;
 	getTickets(raffleId: string): Promise<Ticket[]>;
 	getTicketsByPaymentId(paymentId: string): Promise<Ticket[]>;

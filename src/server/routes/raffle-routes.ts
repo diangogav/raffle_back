@@ -8,8 +8,8 @@ import { PermissionsValidator } from "../../modules/auth/application/Permissions
 import { PaymentMethod } from "../../modules/payment/domain/PaymentMethod.enum";
 import { PaymentPostgresRepository } from "../../modules/payment/infrastructure/PaymentPostgresRepository";
 import { BuyTicket } from "../../modules/raffle/application/BuyTicket";
-import { OngoingRafflesGetter } from "../../modules/raffle/application/OngoingRafflesGetter";
 import { RaffleDetailFinder } from "../../modules/raffle/application/RaffleDetailFinder";
+import { RaffleGetter } from "../../modules/raffle/application/RaffleGetter";
 import { RafflesResumeGetter } from "../../modules/raffle/application/RafflesResumeGetter";
 import { RaffleWinnersGetter } from "../../modules/raffle/application/RaffleWinnersGetter";
 import { RaffleStatus } from "../../modules/raffle/domain/RaffleStatus.enum";
@@ -42,7 +42,13 @@ export const raffleRoutes = new Elysia({
 			const field = "createdAt";
 			const direction = "DESC";
 
-			return new OngoingRafflesGetter(repository, exchangeRateRepository).get({ limit, page, field, direction });
+			return new RaffleGetter(repository, exchangeRateRepository).get({
+				limit,
+				page,
+				field,
+				direction,
+				statuses: [RaffleStatus.ONGOING, RaffleStatus.SORTABLE],
+			});
 		},
 		{
 			query: t.Object({
@@ -59,7 +65,13 @@ export const raffleRoutes = new Elysia({
 			const field = "ticketPrice";
 			const direction = "ASC";
 
-			return new OngoingRafflesGetter(repository, exchangeRateRepository).get({ limit, page, field, direction });
+			return new RaffleGetter(repository, exchangeRateRepository).get({
+				limit,
+				page,
+				field,
+				direction,
+				statuses: [RaffleStatus.ONGOING, RaffleStatus.SORTABLE],
+			});
 		},
 		{
 			query: t.Object({
