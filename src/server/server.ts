@@ -2,6 +2,7 @@ import cors from "@elysiajs/cors";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { rateLimit } from "elysia-rate-limit";
+import { SendCongratulationsEmailWhenRaffleIsDrawn } from "src/modules/raffle/application/SendCongratulationsEmailWhenRaffleIsDrawn";
 
 import { config } from "../config";
 import { SendWinnerEmailWhenRaffleIsDrawn } from "../modules/raffle/application/SendWinnerEmailWhenRaffleIsDrawn";
@@ -146,6 +147,16 @@ export class Server {
 				this.logger,
 				this.slackMessageSender,
 				container.get(ExchangeRateRepository),
+			),
+		);
+
+		eventBus.subscribe(
+			SendCongratulationsEmailWhenRaffleIsDrawn.ListenTo,
+			new SendCongratulationsEmailWhenRaffleIsDrawn(
+				new RafflePostgresRepository(),
+				new UserPostgresRepository(),
+				container.get(EmailSender),
+				this.logger,
 			),
 		);
 	}

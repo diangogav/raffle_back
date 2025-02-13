@@ -55,6 +55,8 @@ export class DrawRaffles implements Schedulable {
 						raffleTitle: raffle.title,
 						raffleCover: raffle.cover,
 						drawnAt: raffle.drawnAt as Date,
+						rafflePrice: raffle.ticketPrice,
+						totalTickets: raffle.ticketsPurchased.length,
 					}),
 				);
 			}

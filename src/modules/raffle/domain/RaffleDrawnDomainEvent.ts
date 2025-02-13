@@ -2,8 +2,10 @@ export type RaffleDrawnPayload = {
 	raffleId: string;
 	raffleTitle: string;
 	raffleCover: string;
+	rafflePrice: number;
 	winnerTickets: string[];
 	drawnAt: Date;
+	totalTickets: number;
 };
 
 export class RaffleDrawnDomainEvent {
