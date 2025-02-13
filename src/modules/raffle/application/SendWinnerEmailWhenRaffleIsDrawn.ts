@@ -29,15 +29,19 @@ export class SendWinnerEmailWhenRaffleIsDrawn implements DomainEventSubscriber<R
 				return;
 			}
 
-			for (const user of users) {
-				const template = new RaffleDrawnTemplate({
-					raffleTitle: event.data.raffleTitle,
-					raffleCover: event.data.raffleCover,
-					winnerTicketNumber: winnerTicket.ticketNumber,
-				});
+			const delay = 3000;
 
-				void this.emailSender.send({ template, to: user.email });
-			}
+			users.forEach((user, index) => {
+				setTimeout(() => {
+					const template = new RaffleDrawnTemplate({
+						raffleTitle: event.data.raffleTitle,
+						raffleCover: event.data.raffleCover,
+						winnerTicketNumber: winnerTicket.ticketNumber,
+					});
+
+					void this.emailSender.send({ template, to: user.email });
+				}, index * delay);
+			});
 		} catch (error) {
 			this.logger.error(error);
 		}
