@@ -19,9 +19,9 @@ const options: DataSourceOptions = {
 	database: config.postgres.database,
 	synchronize: false,
 	logging: true,
-	ssl: {
-		rejectUnauthorized: false,
-	},
+	// ssl: {
+	// 	rejectUnauthorized: false,
+	// },
 	entities: [UserEntity, RaffleEntity, TicketEntity, PaymentEntity, RoleEntity, PermissionEntity, ExchangeRateEntity],
 	subscribers: [],
 	migrations: ["src/shared/database/infrastructure/postgres/migrations/*.ts"],
